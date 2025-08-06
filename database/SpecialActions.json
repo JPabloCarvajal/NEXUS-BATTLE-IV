@@ -1,0 +1,205 @@
+[
+  {
+    "heroType": "TANK",
+    "specialActions": [
+      {
+        "name": "Shield Blow",
+        "actionType": "ATTACK",
+        "powerCost": 2,
+        "effect": { "effectType": "BOOST_ATTACK", "value": "+2", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Stone Hand",
+        "actionType": "DEFENSE",
+        "powerCost": 4,
+        "effect": { "effectType": "BOOST_DEFENSE", "value": "+12", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Fierce Defense",
+        "actionType": "DEFENSE",
+        "powerCost": 6,
+        "effect": { "effectType": "DEFENSE", "value": "Immune to physical, 3d6 magic damage taken", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      }
+    ]
+  },
+  {
+    "heroType": "WEAPONS_PAL",
+    "specialActions": [
+      {
+        "name": "Bloody Charge",
+        "actionType": "ATTACK",
+        "powerCost": 4,
+        "effect": { "effectType": "BOOST_ATTACK", "value": "+2 attack, +1 damage", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "God's Spear",
+        "actionType": "ATTACK",
+        "powerCost": 4,
+        "effect": { "effectType": "BOOST_DAMAGE", "value": "+2 damage", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Storm Strike",
+        "actionType": "ATTACK",
+        "powerCost": 6,
+        "effect": { "effectType": "BOOST_ATTACK", "value": "+3d6 attack, +2 damage", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      }
+    ]
+  },
+  {
+    "heroType": "FIRE_MAGE",
+    "specialActions": [
+      {
+        "name": "Magma Missiles",
+        "actionType": "ATTACK",
+        "powerCost": 2,
+        "effect": { "effectType": "BOOST_ATTACK", "value": "+1 attack, +2 damage", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Volcano",
+        "actionType": "ATTACK",
+        "powerCost": 6,
+        "effect": { "effectType": "BOOST_ATTACK", "value": "+3 attack, +3d9 damage", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Fire Wall",
+        "actionType": "DEFENSE",
+        "powerCost": 4,
+        "effect": { "effectType": "DODGE", "value": "+1 attack, returns 0dx damage taken last turn", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      }
+    ]
+  },
+  {
+    "heroType": "ICE_MAGE",
+    "specialActions": [
+      {
+        "name": "Ice Rain",
+        "actionType": "ATTACK",
+        "powerCost": 2,
+        "effect": { "effectType": "BOOST_ATTACK", "value": "+2 attack, +2 damage", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Ice Cone",
+        "actionType": "DEFENSE",
+        "powerCost": 6,
+        "effect": { "effectType": "BOOST_DAMAGE", "value": "+2 damage, -1d3 attack to enemy for 2 turns", "durationTurns": 2 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Ice Ball",
+        "actionType": "DEFENSE",
+        "powerCost": 4,
+        "effect": { "effectType": "DODGE", "value": "+2 attack, -0d4 damage to enemy", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      }
+    ]
+  },
+  {
+    "heroType": "POISON_ROGUE",
+    "specialActions": [
+      {
+        "name": "Lotus Flower",
+        "actionType": "ATTACK",
+        "powerCost": 2,
+        "effect": { "effectType": "DAMAGE", "value": "+4d8", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Agony",
+        "actionType": "DAMAGE",
+        "powerCost": 4,
+        "effect": { "effectType": "DAMAGE", "value": "+2d9", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Stab",
+        "actionType": "ATTACK",
+        "powerCost": 4,
+        "effect": { "effectType": "BOOST_ATTACK", "value": "+1 attack (2 turns), +2 damage (1 turn)", "durationTurns": 2 },
+        "cooldown": 0,
+        "isAvailable": true
+      }
+    ]
+  },
+  {
+    "heroType": "SHAMAN",
+    "specialActions": [
+      {
+        "name": "Touch of Life",
+        "actionType": "HEAL",
+        "powerCost": 2,
+        "effect": { "effectType": "HEAL", "value": "+2", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Natural Link",
+        "actionType": "HEAL",
+        "powerCost": 4,
+        "effect": { "effectType": "HEAL", "value": "+2 for 2 turns", "durationTurns": 2 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Forest Song",
+        "actionType": "HEAL",
+        "powerCost": 6,
+        "effect": { "effectType": "HEAL", "value": "+2d6 for all allies for 2 turns", "durationTurns": 2 },
+        "cooldown": 0,
+        "isAvailable": true
+      }
+    ]
+  },
+  {
+    "heroType": "MEDIC",
+    "specialActions": [
+      {
+        "name": "Direct Cure",
+        "actionType": "HEAL",
+        "powerCost": 2,
+        "effect": { "effectType": "HEAL", "value": "+2", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Effect Neutralization",
+        "actionType": "HEAL",
+        "powerCost": 4,
+        "effect": { "effectType": "HEAL", "value": "+2 + 2d4", "durationTurns": 1 },
+        "cooldown": 0,
+        "isAvailable": true
+      },
+      {
+        "name": "Resuscitation",
+        "actionType": "HEAL",
+        "powerCost": 10,
+        "effect": { "effectType": "REVIVE", "value": "100% heal to 1 ally", "durationTurns": 0 },
+        "cooldown": 0,
+        "isAvailable": true
+      }
+    ]
+  }
+]

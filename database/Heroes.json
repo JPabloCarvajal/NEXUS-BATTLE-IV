@@ -1,0 +1,67 @@
+[
+  {
+    "heroType": "TANK",
+    "level": 1,
+    "power": 10,
+    "health": 44,
+    "defense": 11,
+    "attack": "10 + 1d6",
+    "damage": "1d4"
+  },
+  {
+    "heroType": "WEAPONS_PAL",
+    "level": 1,
+    "power": 8,
+    "health": 44,
+    "defense": 11,
+    "attack": "10 + 1d6",
+    "damage": "1d6"
+  },
+  {
+    "heroType": "FIRE_MAGE",
+    "level": 1,
+    "power": 8,
+    "health": 40,
+    "defense": 10,
+    "attack": "10 + 1d8",
+    "damage": "1d8"
+  },
+  {
+    "heroType": "ICE_MAGE",
+    "level": 1,
+    "power": 10,
+    "health": 40,
+    "defense": 10,
+    "attack": "10 + 1d8",
+    "damage": "1d6"
+  },
+  {
+    "heroType": "POISON_ROGUE",
+    "level": 1,
+    "power": 8,
+    "health": 36,
+    "defense": 8,
+    "attack": "10 + 1d10",
+    "damage": "1d6"
+  },
+  {
+    "heroType": "SHAMAN",
+    "level": 1,
+    "power": 10,
+    "health": 28,
+    "defense": 4,
+    "attack": null,
+    "damage": null,
+    "heal": "6 + 1d6"
+  },
+  {
+    "heroType": "MEDIC",
+    "level": 1,
+    "power": 10,
+    "health": 28,
+    "defense": 4,
+    "attack": null,
+    "damage": null,
+    "heal": "4 + 1d8"
+  }
+]

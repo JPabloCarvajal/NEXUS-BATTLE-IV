@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Defense Strike",
+    "compatibleHeroType": "TANK",
+    "effects": [
+      { "effectType": "DAMAGE", "value": "+4", "durationTurns": 1 },
+      { "effectType": "BOOST_ATTACK", "value": "+2% crit", "durationTurns": 1 }
+    ],
+    "cooldown": 3,
+    "isAvailable": true,
+    "masterChance": 0.04
+  },
+  {
+    "name": "Second Wind",
+    "compatibleHeroType": "WEAPONS_PAL",
+    "effects": [
+      { "effectType": "HEAL", "value": "1d4", "durationTurns": 1 },
+      { "effectType": "BOOST_HEALTH", "value": "+3", "durationTurns": 1 },
+      { "effectType": "BOOST_ATTACK", "value": "+5% crit", "durationTurns": 1 }
+    ],
+    "cooldown": 3,
+    "isAvailable": true,
+    "masterChance": 0.01
+  },
+  {
+    "name": "Blinding Light",
+    "compatibleHeroType": "FIRE_MAGE",
+    "effects": [
+      { "effectType": "HEAL", "value": "+1", "durationTurns": 1 },
+      { "effectType": "DAMAGE", "value": "+2", "durationTurns": 1 },
+      { "effectType": "BOOST_ATTACK", "value": "+1% crit", "durationTurns": 1 }
+    ],
+    "cooldown": 3,
+    "isAvailable": true,
+    "masterChance": 0.03
+  },
+  {
+    "name": "Focused Cold",
+    "compatibleHeroType": "ICE_MAGE",
+    "effects": [
+      { "effectType": "DEFENSE", "value": "No damage next turn", "durationTurns": 1 }
+    ],
+    "cooldown": 3,
+    "isAvailable": true,
+    "masterChance": 0.05
+  },
+  {
+    "name": "Take and Return",
+    "compatibleHeroType": "POISON_ROGUE",
+    "effects": [
+      { "effectType": "DAMAGE", "value": "Return half enemy damage", "durationTurns": 1 }
+    ],
+    "cooldown": 3,
+    "isAvailable": true,
+    "masterChance": 0.02
+  },
+  {
+    "name": "Bloody Intimidation",
+    "compatibleHeroType": "MACHETE",
+    "effects": [
+      { "effectType": "DAMAGE", "value": "+2", "durationTurns": 1 },
+      { "effectType": "BOOST_ATTACK", "value": "+2% crit", "durationTurns": 1 }
+    ],
+    "cooldown": 3,
+    "isAvailable": true,
+    "masterChance": 0.01
+  },
+  {
+    "name": "Changa's Brew",
+    "compatibleHeroType": "SHAMAN",
+    "effects": [
+      { "effectType": "HEAL", "value": "1d8 to all", "durationTurns": 1 }
+    ],
+    "cooldown": 3,
+    "isAvailable": true,
+    "masterChance": 0.1
+  },
+  {
+    "name": "R-3000 Revival",
+    "compatibleHeroType": "MEDIC",
+    "effects": [
+      {
+        "effectType": "REVIVE",
+        "value": "If a teammate dies, revives with 20% HP",
+        "durationTurns": 0
+      }
+    ],
+    "cooldown": 5,
+    "isAvailable": true,
+    "masterChance": 0.1
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "name": "pi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev src/view/Products.ts",
+    "build": "tsc",
+    "start": "node build/src/view/Products.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/socket.io": "^3.0.1"
+  }
+}

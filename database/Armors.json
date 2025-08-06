@@ -1,0 +1,202 @@
+[
+  {
+    "heroType": "TANK",
+    "armors": [
+      {
+        "name": "Wrathful Defender",
+        "armorType": "CHEST",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+2", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+2", "durationTurns": 0 }
+        ],
+        "dropRate": 0.05,
+        "set": 1
+      },
+      {
+        "name": "Burning Magma",
+        "armorType": "CHEST",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+2", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.05,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "WEAPONS_PAL",
+    "armors": [
+      {
+        "name": "Shiny Fist",
+        "armorType": "GLOVERS",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+2", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.02,
+        "set": 1
+      },
+      {
+        "name": "Flaming Fists",
+        "armorType": "BRACERS",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.02,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "FIRE_MAGE",
+    "armors": [
+      {
+        "name": "Arcane Tunic",
+        "armorType": "CHEST",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+2", "durationTurns": 0 }
+        ],
+        "dropRate": 0.03,
+        "set": 1
+      },
+      {
+        "name": "Falling Fire",
+        "armorType": "PANTS",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.03,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "ICE_MAGE",
+    "armors": [
+      {
+        "name": "Ice Crown",
+        "armorType": "HELMET",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.05,
+        "set": 1
+      },
+      {
+        "name": "Frozen Winds",
+        "armorType": "CHEST",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+2", "durationTurns": 0 }
+        ],
+        "dropRate": 0.03,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "POISON_ROGUE",
+    "armors": [
+      {
+        "name": "Exiled Hand",
+        "armorType": "GLOVERS",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+2", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.04,
+        "set": 1
+      },
+      {
+        "name": "Flesh Bindings",
+        "armorType": "CHEST",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+2", "durationTurns": 0 }
+        ],
+        "dropRate": 0.01,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "MACHETE",
+    "armors": [
+      {
+        "name": "Athlete's Foot",
+        "armorType": "BOOTS",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+2", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.01,
+        "set": 1
+      },
+      {
+        "name": "Cruel Blood",
+        "armorType": "BRACERS",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.02,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "SHAMAN",
+    "armors": [
+      {
+        "name": "Forest Walker Skin",
+        "armorType": "CHEST",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+2", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+2", "durationTurns": 0 }
+        ],
+        "dropRate": 0.04,
+        "set": 1
+      },
+      {
+        "name": "Ancestral Echo Helm",
+        "armorType": "HELMET",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+2", "durationTurns": 0 }
+        ],
+        "dropRate": 0.02,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "MEDIC",
+    "armors": [
+      {
+        "name": "Doctor's Gown",
+        "armorType": "CHEST",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+2", "durationTurns": 0 }
+        ],
+        "dropRate": 0.04,
+        "set": 1
+      },
+      {
+        "name": "Expedition Pants",
+        "armorType": "PANTS",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_HEALTH", "value": "+2", "durationTurns": 0 }
+        ],
+        "dropRate": 0.02,
+        "set": 2
+      }
+    ]
+  }
+]

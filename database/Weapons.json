@@ -1,0 +1,177 @@
+[
+  {
+    "heroType": "TANK",
+    "weapons": [
+      {
+        "name": "One-Handed Sword",
+        "effects": [
+          { "effectType": "BOOST_ATTACK", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_ATTACK", "value": "+1%", "durationTurns": 0 }
+        ],
+        "dropRate": 0.03,
+        "set": 1
+      },
+      {
+        "name": "Dragon Shield",
+        "effects": [
+          { "effectType": "BOOST_DEFENSE", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.05,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "WEAPONS_PAL",
+    "weapons": [
+      {
+        "name": "Two-Handed Sword",
+        "effects": [
+          { "effectType": "BOOST_ATTACK", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_ATTACK", "value": "+3%", "durationTurns": 0 }
+        ],
+        "dropRate": 0.01,
+        "set": 1
+      },
+      {
+        "name": "Sharpening Stone",
+        "effects": [
+          { "effectType": "BOOST_DAMAGE", "value": "+2", "durationTurns": 0 }
+        ],
+        "dropRate": 0.02,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "FIRE_MAGE",
+    "weapons": [
+      {
+        "name": "Orb of Blazing Hands",
+        "effects": [
+          { "effectType": "BOOST_ATTACK", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_ATTACK", "value": "+3%", "durationTurns": 0 }
+        ],
+        "dropRate": 0.01,
+        "set": 1
+      },
+      {
+        "name": "Will-o'-the-Wisp",
+        "effects": [
+          { "effectType": "BOOST_ATTACK", "value": "+1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.03,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "ICE_MAGE",
+    "weapons": [
+      {
+        "name": "Permafrost Staff",
+        "effects": [
+          { "effectType": "DAMAGE", "value": "+1", "durationTurns": 0 },
+          { "effectType": "BOOST_ATTACK", "value": "-2%", "durationTurns": 0 }
+        ],
+        "dropRate": 0.01,
+        "set": 1
+      },
+      {
+        "name": "Frozen Veins",
+        "effects": [
+          { "effectType": "DAMAGE", "value": "-1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.03,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "POISON_ROGUE",
+    "weapons": [
+      {
+        "name": "Putrid Dagger",
+        "effects": [
+          { "effectType": "DAMAGE", "value": "+1 for 2 turns", "durationTurns": 2 },
+          { "effectType": "BOOST_ATTACK", "value": "+3%", "durationTurns": 0 }
+        ],
+        "dropRate": 0.02,
+        "set": 1
+      },
+      {
+        "name": "Blurry Vision",
+        "effects": [
+          { "effectType": "DAMAGE", "value": "-1", "durationTurns": 0 },
+          { "effectType": "BOOST_ATTACK", "value": "-1", "durationTurns": 0 }
+        ],
+        "dropRate": 0.01,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "MACHETE",
+    "weapons": [
+      {
+        "name": "Cursed Machete",
+        "effects": [
+          { "effectType": "DAMAGE", "value": "+2", "durationTurns": 0 },
+          { "effectType": "BOOST_ATTACK", "value": "+2%", "durationTurns": 0 }
+        ],
+        "dropRate": 0.01,
+        "set": 1
+      },
+      {
+        "name": "Blood Saw",
+        "effects": [
+          { "effectType": "DAMAGE", "value": "+2 for 2 turns", "durationTurns": 2 }
+        ],
+        "dropRate": 0.02,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "SHAMAN",
+    "weapons": [
+      {
+        "name": "Chinese Root",
+        "effects": [
+          { "effectType": "HEAL", "value": "2d4", "durationTurns": 0 }
+        ],
+        "dropRate": 0.03,
+        "set": 1
+      },
+      {
+        "name": "Green Herbs",
+        "effects": [
+          { "effectType": "HEAL", "value": "+2 for 2 turns", "durationTurns": 2 }
+        ],
+        "dropRate": 0.03,
+        "set": 2
+      }
+    ]
+  },
+  {
+    "heroType": "MEDIC",
+    "weapons": [
+      {
+        "name": "Emergency Kit",
+        "effects": [
+          { "effectType": "HEAL", "value": "2d6", "durationTurns": 0 }
+        ],
+        "dropRate": 0.03,
+        "set": 1
+      },
+      {
+        "name": "Revival Pack",
+        "effects": [
+          { "effectType": "HEAL", "value": "4d6", "durationTurns": 0 }
+        ],
+        "dropRate": 0.03,
+        "set": 2
+      }
+    ]
+  }
+]

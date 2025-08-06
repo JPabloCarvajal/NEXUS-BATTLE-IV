@@ -1,0 +1,143 @@
+[
+  {
+    "heroType": "TANK",
+    "items": [
+      {
+        "name": "Shield Spikes",
+        "effects": [
+          {
+            "effectType": "DAMAGE",
+            "value": "+1",
+            "durationTurns": 1
+          }
+        ],
+        "description": "If the opponent's attack is lower than the warrior's defense, the opponent receives +1 damage.",
+        "dropRate": 0.20
+      }
+    ]
+  },
+  {
+    "heroType": "WEAPONS_PAL",
+    "items": [
+      {
+        "name": "Wrath Grip",
+        "effects": [
+          {
+            "effectType": "DAMAGE",
+            "value": "+1",
+            "durationTurns": 2
+          },
+          {
+            "effectType": "BOOST_HEALTH",
+            "value": "-1",
+            "durationTurns": 2
+          }
+        ],
+        "description": "+1 damage for 2 turns. Causes the warrior to lose -1 HP during the same turns.",
+        "dropRate": 0.10
+      }
+    ]
+  },
+  {
+    "heroType": "FIRE_MAGE",
+    "items": [
+      {
+        "name": "Ring of Pyro-Explosion",
+        "effects": [
+          {
+            "effectType": "DAMAGE",
+            "value": "+3",
+            "durationTurns": 1
+          }
+        ],
+        "description": "+3 damage",
+        "dropRate": 0.07
+      }
+    ]
+  },
+  {
+    "heroType": "ICE_MAGE",
+    "items": [
+      {
+        "name": "Frozen Wind Tome",
+        "effects": [
+          {
+            "effectType": "DAMAGE",
+            "value": "+2",
+            "durationTurns": 1
+          }
+        ],
+        "description": "+2 damage",
+        "dropRate": 0.10
+      }
+    ]
+  },
+  {
+    "heroType": "POISON_ROGUE",
+    "items": [
+      {
+        "name": "Lacerating Poison",
+        "effects": [
+          {
+            "effectType": "DAMAGE",
+            "value": "-1 power to enemy",
+            "durationTurns": 2
+          }
+        ],
+        "description": "-1 to enemy's power. Applies every two turns.",
+        "dropRate": 0.09
+      }
+    ]
+  },
+  {
+    "heroType": "MACHETE",
+    "items": [
+      {
+        "name": "Bloody Mace",
+        "effects": [
+          {
+            "effectType": "DAMAGE",
+            "value": "x2",
+            "durationTurns": 1
+          }
+        ],
+        "description": "Double the damage caused that turn by the bleeding saw on the opponent.",
+        "dropRate": 0.08
+      }
+    ]
+  },
+  {
+    "heroType": "SHAMAN",
+    "items": [
+      {
+        "name": "Healing Feather",
+        "effects": [
+          {
+            "effectType": "HEAL",
+            "value": "x2",
+            "durationTurns": 1
+          }
+        ],
+        "description": "Doubles healing values.",
+        "dropRate": 0.10
+      }
+    ]
+  },
+  {
+    "heroType": "MEDIC",
+    "items": [
+      {
+        "name": "Bandages",
+        "effects": [
+          {
+            "effectType": "HEAL",
+            "value": "+1",
+            "durationTurns": 3
+          }
+        ],
+        "description": "Heals wounds for +1 for 3 turns.",
+        "dropRate": 0.10
+      }
+    ]
+  }
+]
