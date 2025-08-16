@@ -1,0 +1,90 @@
+{
+    "userNickName": "string",
+    "hero": 
+          {
+            "heroType": "string",
+            "level": "number",
+            "power": "number",
+            "health": "number",
+            "defense": "number",
+            "attack": "number",
+            "attackBoost": {
+                "min": "number",
+                "max": "number"
+            },
+            "damage": {
+                "min": "number",
+                "max": "number"
+            },
+            "specialActions": [
+                {
+                    "name": "String",
+                    "actionType": "ENUM as string",
+                    "powerCost": "number",
+                    "effect": { "effectType": "ENUM as string", "value": "number","durationTurns": "number" },
+                    "cooldown": "number",
+                    "isAvailable": "boolean"
+                }
+            ]
+          }
+    ,
+    "equipped":
+    {
+        "items": [
+                {
+                    "name": "String",
+                    "effects": [
+                        {
+                            "effectType": "ENUM as string",
+                            "value": "number",
+                            "durationTurns": "number"
+                        }
+                    ],
+                    "dropRate":"number"
+                }
+        ],
+        "armors": [
+            {
+                "name": "string",
+                "effects": [
+                        {
+                            "effectType": "ENUM as string",
+                            "value": "number",
+                            "durationTurns": "number"
+                        }
+                ],
+                "dropRate": "number"
+            }
+        ],
+        "weapons": [
+            {
+                "name": "string",
+                "effects": [
+                        {
+                            "effectType": "ENUM as string",
+                            "value": "number",
+                            "durationTurns": "number"
+                        }
+                ],
+                "dropRate": "number"
+            }
+        ],
+        "epicAbilites": [
+            {
+                "name": "string",
+                "compatibleHeroType": "string",
+                "effects": [
+                        {
+                            "effectType": "ENUM as string",
+                            "value": "number",
+                            "durationTurns": "number"
+                        }
+                ],
+                "cooldown": "number",
+                "isAvailable": "boolean",
+                "masterChance": "number"
+            }
+        ]
+    }
+
+}
