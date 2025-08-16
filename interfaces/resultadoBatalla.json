@@ -1,0 +1,5 @@
+{
+    "itemNameLost": "string",
+    "itemNameWon": "string",
+    "xpHero": "number"
+}
