@@ -1,10 +1,21 @@
-import SocketServer from "../src/core/SocketServer";
-import { HttpServer } from "./core/HttpServer";
+import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import { setupRoomSocket } from "./infra/ws/RoomSocket";
+import { roomRouter } from "./infra/http/RoomController";
 
-const PORT = 3000;
-const httpServer = new HttpServer(PORT);
-httpServer.listen(() => {
-	console.log(`Servidor HTTP escuchando en http://localhost:${PORT}`);
+const app = express();
+const httpServer = createServer(app);
+
+const io = new Server(httpServer, {
+  cors: { origin: "*" }
 });
 
-new SocketServer(httpServer.server);
+setupRoomSocket(io);
+
+app.use(express.json());
+app.use("/api", roomRouter);
+
+const PORT = 3000;
+httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
