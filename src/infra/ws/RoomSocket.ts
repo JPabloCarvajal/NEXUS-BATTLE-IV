@@ -3,15 +3,20 @@ import { InMemoryRoomRepository } from "../db/InMemoryRoomRepository";
 import { SetPlayerReady } from "../../app/rooms/SetPlayerReady";
 import { AssignHeroStats } from "../../app/rooms/AssignHeroStats";
 import { BattleService } from "../../app/services/BattleService";
+import { LeaveRoom } from "../../app/rooms/LeaveRoom";
 
 const repo = InMemoryRoomRepository.getInstance();
 const setReady = new SetPlayerReady(repo);
 const assignStats = new AssignHeroStats(repo);
 const battleService = new BattleService(repo);
+const leaveRoom = new LeaveRoom(repo);
 
 export function setupRoomSocket(io: Server) {
+  
   io.on("connection", (socket) => {
+
     console.log(`Client connected ${socket.id}`);
+    
     socket.on("joinRoom", ({ roomId, player }) => {
       socket.join(roomId);
       io.to(roomId).emit("playerJoined", player);
@@ -39,5 +44,30 @@ export function setupRoomSocket(io: Server) {
         socket.emit("error", { error: err.message });
       }
     });
+     socket.on("leaveRoom", async ({ roomId, playerId }: { roomId: string, playerId: string }) => {
+      try {
+        socket.leave(roomId);
+
+        io.to(roomId).emit("playerLeft", { playerId });
+      } catch (err: any) {
+        socket.emit("error", { error: err.message });
+      }
+    });
+  
+    socket.on("leaveRoom", ({ roomId, playerId }: { roomId: string, playerId: string }) => {
+      try {
+        const closed = leaveRoom.execute(roomId, playerId);
+
+        socket.leave(roomId);
+
+        io.to(roomId).emit("playerLeft", { playerId, roomClosed: closed });
+        if (closed) {
+          io.to(roomId).emit("roomClosed", { roomId });
+        }
+      } catch (err: any) {
+        socket.emit("error", { error: err.message });
+      }
+    });
   });
+
 }

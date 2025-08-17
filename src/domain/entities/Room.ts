@@ -112,5 +112,27 @@ export class Room {
       return this.players.length === this.capacity && this.players.every(p => p.ready);
   }
 
+  removePlayer(username: string): void {
+    
+    const index = this.players.findIndex(p => p.username === username);
+
+    if (index === -1) throw new Error("Player not in room");
+    this.players.splice(index, 1);
+
+
+    this.teamA = this.teamA.filter(p => p.username !== username);
+    this.teamB = this.teamB.filter(p => p.username !== username);
+
+    if (!this.allPlayersReady()) {
+      this.phase = "LOBBY";
+    }
+
+    if (this.players.length === 0) {
+      this.phase = "FINISHED";
+    }
+  }
+
+
+
 
 }

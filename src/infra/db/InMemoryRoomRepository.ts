@@ -23,5 +23,13 @@ export class InMemoryRoomRepository implements RoomRepository {
   findById(id: string): Room | undefined {
     return this.rooms.get(id);
   }
+
+  delete(id: string): void {
+    this.rooms.delete(id);
+  }
+
+  findAll(): Room[] {
+    return Array.from(this.rooms.values());
+  }
 }
 
