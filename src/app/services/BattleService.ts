@@ -73,6 +73,7 @@ export class BattleService {
     switch (action.type) {
       case "BASIC_ATTACK":
         damage = this.calculateDamage(source, target);
+        console.log("BASIC_ATTACK", { source, target, damage });
         break;
 
       // case "SPECIAL_SKILL":
@@ -95,14 +96,31 @@ export class BattleService {
 
     // 5. Avanzar turno
     battle.advanceTurn();
-    this.battleRepository.save(battle);
 
+    battle.battleLogger.addLog(
+      {
+        timestamp: Date.now(),
+        attacker: source.username,
+        target: target.username,
+        value: damage,
+        effect: effect,
+      }
+    )
+
+    this.battleRepository.save(battle);
+    
     // 6. Retornar resultado para emitirlo por WS
     return {
       action,
       damage,
       effect,
       ko,
+      source: {
+        ...source.heroStats.hero,
+      },
+      target: {
+        ...target.heroStats.hero,
+      },
       nextTurnPlayer: battle.getCurrentActor(),
     };
   }
@@ -126,7 +144,11 @@ export class BattleService {
     const aleatoryAttackEffect = new AleatoryAttackEffect(probabilites, results);
 
     const result = aleatoryAttackEffect.generateAleatoryEffect();
-    const damage = randomInt(source.heroStats?.hero.damage.min || 0, source.heroStats?.hero.damage.max || 0 + 1);
+    const damage = randomInt(
+      source.heroStats?.hero.damage?.min ?? 0,
+      (source.heroStats?.hero.damage?.max ?? 0) + 1
+    );
+
     switch (result) {
       case RandomEffectType.DAMAGE:
         return damage;
@@ -145,6 +167,9 @@ export class BattleService {
         break;
       case RandomEffectType.NEGATE:
         return 0;
+        break;
+      default:
+        return damage;
         break;
     }
   }

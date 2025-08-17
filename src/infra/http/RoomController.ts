@@ -23,6 +23,7 @@ roomRouter.get("/rooms", (_req: Request, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 }); 
+
 roomRouter.post("/rooms", (req: Request, res: Response) => {
   try {
     const { id, mode, allowAI, credits, heroLevel, ownerId } = req.body;

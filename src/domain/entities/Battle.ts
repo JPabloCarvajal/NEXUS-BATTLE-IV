@@ -1,3 +1,4 @@
+import { BattleLogger } from "../../shared/utils/BattleLogger";
 import { Player } from "./Player";
 import { Team } from "./Team";
 
@@ -8,7 +9,8 @@ export class Battle {
     public teams: Team[],
     public turnOrder: string[],
     public currentTurnIndex: number = 0,
-    public state: "WAITING" | "IN_PROGRESS" | "FINISHED" = "WAITING"
+    public state: "WAITING" | "IN_PROGRESS" | "FINISHED" = "WAITING",
+    public battleLogger: BattleLogger = new BattleLogger()
   ) {}
 
   startBattle() {
@@ -17,7 +19,7 @@ export class Battle {
   }
 
   getCurrentActor(): string {
-    const actor = this.turnOrder[this.currentTurnIndex];
+    const actor = this.turnOrder[this.currentTurnIndex % this.turnOrder.length] ;
     if (actor === undefined) {
       throw new Error("Current actor is undefined.");
     }
@@ -33,6 +35,6 @@ export class Battle {
   }
 
   advanceTurn() {
-    this.currentTurnIndex = (this.currentTurnIndex + 1) % this.turnOrder.length;
+    this.currentTurnIndex = this.currentTurnIndex + 1;
   }
 }

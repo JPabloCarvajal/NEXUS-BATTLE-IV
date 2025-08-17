@@ -12,7 +12,6 @@ export class BattleSocket {
     socket.on("submitAction", ({ roomId, action }) => {
       try {
         const result = this.battleService.handleAction(roomId, action);
-        // notificar resultado a todos en la sala
         this.io.to(roomId).emit("actionResolved", result);
       } catch (err: any) {
         socket.emit("error", { error: err.message });
