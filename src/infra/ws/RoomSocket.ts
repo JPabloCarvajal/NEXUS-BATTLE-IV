@@ -1,17 +1,22 @@
 import { Server } from "socket.io";
 import { InMemoryRoomRepository } from "../db/InMemoryRoomRepository";
-import { SetPlayerReady } from "../../app/rooms/SetPlayerReady";
-import { AssignHeroStats } from "../../app/rooms/AssignHeroStats";
+import { SetPlayerReady } from "../../app/useCases/rooms/SetPlayerReady";
+import { AssignHeroStats } from "../../app/useCases/rooms/AssignHeroStats";
 import { BattleService } from "../../app/services/BattleService";
-import { LeaveRoom } from "../../app/rooms/LeaveRoom";
+import { LeaveRoom } from "../../app/useCases/rooms/LeaveRoom";
+import { BattleSocket } from "./BattleSocket";
+import InMemoryBattleRepository from "../db/InMemoryBattleRepository";
 
-const repo = InMemoryRoomRepository.getInstance();
-const setReady = new SetPlayerReady(repo);
-const assignStats = new AssignHeroStats(repo);
-const battleService = new BattleService(repo);
-const leaveRoom = new LeaveRoom(repo);
+const roomRepo = InMemoryRoomRepository.getInstance();
+const battleRepo = InMemoryBattleRepository.getInstance();
+const setReady = new SetPlayerReady(roomRepo);
+const assignStats = new AssignHeroStats(roomRepo);
+const battleService = new BattleService(roomRepo, battleRepo);
+const leaveRoom = new LeaveRoom(roomRepo);
 
 export function setupRoomSocket(io: Server) {
+
+  const battleSocket = new BattleSocket(io, battleService);
   
   io.on("connection", (socket) => {
 
@@ -22,15 +27,27 @@ export function setupRoomSocket(io: Server) {
       io.to(roomId).emit("playerJoined", player);
     });
 
-    socket.on("playerReady", ({ roomId, playerId, team }) => {
+    socket.on("playerReady", async ({ roomId, playerId, team }) => {
       try {
         const allReady = setReady.execute(roomId, playerId, team);
         io.to(roomId).emit("playerReady", { playerId });
 
         if (allReady) {
           io.to(roomId).emit("allReady", { message: "All players ready, preparing battle..." });
-          battleService.createBattleFromRoom(roomId);
-        }
+          const battle = battleService.createBattleFromRoom(roomId);
+          const sockets = await io.in(roomId).fetchSockets();
+          sockets.forEach((remoteSocket) => {
+            const realSocket = io.sockets.sockets.get(remoteSocket.id);
+            if (realSocket) {
+              battleSocket.attachHandlers(realSocket);
+            }
+          });
+          io.to(roomId).emit("battleStarted", 
+            { 
+              message: "Battle has started!",
+              turns: battle.turnOrder,
+            });
+        } 
       } catch (err: any) {
         socket.emit("error", { error: err.message });
       }
@@ -44,10 +61,10 @@ export function setupRoomSocket(io: Server) {
         socket.emit("error", { error: err.message });
       }
     });
+
      socket.on("leaveRoom", async ({ roomId, playerId }: { roomId: string, playerId: string }) => {
       try {
         socket.leave(roomId);
-
         io.to(roomId).emit("playerLeft", { playerId });
       } catch (err: any) {
         socket.emit("error", { error: err.message });
@@ -69,5 +86,4 @@ export function setupRoomSocket(io: Server) {
       }
     });
   });
-
 }

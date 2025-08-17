@@ -1,13 +1,14 @@
 import { RoomRepository } from "./RoomRepository";
-import { Player } from "../../domain/entities/Player";
+import { HeroStats } from "../../../domain/entities/HeroStats";
 
-export class JoinRoom {
+export class AssignHeroStats {
   constructor(private repo: RoomRepository) {}
 
-  execute(roomId: string, player: Player): void {
+  execute(roomId: string, playerId: string, stats: HeroStats): void {
     const room = this.repo.findById(roomId);
     if (!room) throw new Error("Room not found");
-    room.addPlayer(player);
+
+    room.setHeroStats(playerId, stats);
     this.repo.save(room);
   }
 }

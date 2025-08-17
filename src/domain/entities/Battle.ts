@@ -1,3 +1,4 @@
+import { Player } from "./Player";
 import { Team } from "./Team";
 
 export class Battle {
@@ -21,5 +22,17 @@ export class Battle {
       throw new Error("Current actor is undefined.");
     }
     return actor;
+  }
+
+  findPlayer(playerUsername: string): Player | undefined {
+    for (const team of this.teams) {
+      const player = team.findPlayer(playerUsername);
+      if (player) return player;
+    }
+    return undefined;
+  }
+
+  advanceTurn() {
+    this.currentTurnIndex = (this.currentTurnIndex + 1) % this.turnOrder.length;
   }
 }

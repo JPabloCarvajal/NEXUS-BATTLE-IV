@@ -1,9 +1,9 @@
 import { Request, Response, Router } from "express";
-import { CreateRoom } from "../../app/rooms/CreateRoom";
-import { JoinRoom } from "../../app/rooms/JoinRoom";
+import { CreateRoom } from "../../app/useCases/rooms/CreateRoom";
+import { JoinRoom } from "../../app/useCases/rooms/JoinRoom";
 import { InMemoryRoomRepository } from "../db/InMemoryRoomRepository";
-import { LeaveRoom } from "../../app/rooms/LeaveRoom";
-import { GetAllRooms } from "../../app/rooms/GetAllRooms";
+import { LeaveRoom } from "../../app/useCases/rooms/LeaveRoom";
+import { GetAllRooms } from "../../app/useCases/rooms/GetAllRooms";
 
 const repo = InMemoryRoomRepository.getInstance();
 const createRoom = new CreateRoom(repo);
