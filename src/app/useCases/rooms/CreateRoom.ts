@@ -1,4 +1,4 @@
-import { Room, RoomConfig } from "../../domain/entities/Room";
+import { Room, RoomConfig } from "../../../domain/entities/Room";
 import { RoomRepository } from "./RoomRepository";
 
 export class CreateRoom {

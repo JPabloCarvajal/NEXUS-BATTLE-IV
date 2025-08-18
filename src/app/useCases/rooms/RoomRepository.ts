@@ -1,4 +1,4 @@
-import { Room } from "../../domain/entities/Room";
+import { Room } from "../../../domain/entities/Room";
 
 // driven
 export interface RoomRepository {

@@ -1,5 +1,5 @@
 import { RoomRepository } from "./RoomRepository";
-import { Room } from "../../domain/entities/Room";
+import { Room } from "../../../domain/entities/Room";
 
 export class GetAllRooms {
   constructor(private repo: RoomRepository) {}

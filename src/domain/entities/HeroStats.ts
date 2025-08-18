@@ -38,10 +38,26 @@ export enum ActionType {
     HEAL
 }
 
+export enum RandomEffectType {
+  DAMAGE,
+  CRITIC_DAMAGE,
+  EVADE,
+  RESIST,
+  ESCAPE,
+  NEGATE
+}
+
+export enum TargetType {
+  SELF,
+  ALLY,
+  ENEMY
+}
+
 export interface Effect {
   effectType: string;
   value: number;
   durationTurns: number;
+  target: TargetType
 }
 
 export interface AttackBoost {
@@ -58,9 +74,15 @@ export interface SpecialAction {
   name: string;
   actionType: ActionType;
   powerCost: number;
-  effect: Effect;
+  effect: Effect[];
   cooldown: number;
   isAvailable: boolean;
+}
+
+export interface RandomEffect {
+  randomEffectType: RandomEffectType;
+  percentage: number;
+  valueApply: AttackBoost;
 }
 
 export interface Hero {
@@ -73,6 +95,7 @@ export interface Hero {
   attackBoost: AttackBoost;
   damage: Damage;
   specialActions: SpecialAction[];
+  randomEffects: RandomEffect[]
 }
 
 export interface Item {

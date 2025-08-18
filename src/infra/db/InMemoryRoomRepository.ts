@@ -1,5 +1,5 @@
 import { Room } from "../../domain/entities/Room";
-import { RoomRepository } from "../../app/rooms/RoomRepository";
+import { RoomRepository } from "../../app/useCases/rooms/RoomRepository";
 
 export class InMemoryRoomRepository implements RoomRepository {
   private static instance: InMemoryRoomRepository;
