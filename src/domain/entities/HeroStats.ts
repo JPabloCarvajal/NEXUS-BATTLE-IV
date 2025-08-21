@@ -5,7 +5,8 @@ export enum HeroType {
     ICE_MAGE,
     POISON_ROGUE,
     SHAMAN,
-    MEDIC
+    MEDIC,
+    GUERRERO_ARMAS
 }
 
 export enum HeroState {
