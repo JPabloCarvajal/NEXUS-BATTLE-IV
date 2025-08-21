@@ -8,7 +8,6 @@ import { RoomRepository } from "../useCases/rooms/RoomRepository";
 import AleatoryAttackEffect from "./aleatoryEffectsGenerator/impl/aleatoryAttackEffect";
 import { Player } from "../../domain/entities/Player";
 import SpecialSkillService, { SpecialId } from "./SpecialSkillService";
-import MasterSkillService, { MasterId } from "./MasterSkillService";
 
 type TempBuff = { atk?: number; def?: number; dmgFlat?: number };
 
@@ -112,18 +111,18 @@ export class BattleService {
     const battle = this.battleRepository.findById(roomId);
     if (!battle) throw new Error("Battle not found");
 
-    // 1. Validar turno
+    // 1) Validar turno
     const currentPlayerId = battle.getCurrentActor();
     if (currentPlayerId !== action.sourcePlayerId) {
       throw new Error("Not your turn");
     }
 
-    // 2. Validar source/target
+    // 2) Source/Target
     const source = battle.findPlayer(action.sourcePlayerId);
     const target = battle.findPlayer(action.targetPlayerId);
     if (!source || !target) throw new Error("Invalid source or target");
 
-    // 2.1 Al INICIO del turno del actor, quita buff temporal si quedaba del turno anterior
+    // 2.1) Inicio del turno del actor → quitar su buff si estaba pendiente
     this.removeBuffIfPendingAtTurnStart(source);
 
     let damage = 0;
@@ -138,11 +137,9 @@ export class BattleService {
       case "SPECIAL_SKILL": {
         if (!action.skillId) throw new Error("skillId requerido para SPECIAL_SKILL");
 
-        // 1) Resolver la special (gasta poder / cooldown)
         const specialId = action.skillId as SpecialId;
         const outcome = SpecialSkillService.resolveSpecial(source, specialId);
 
-        // (misma lógica que antes para buffs y curas)
         const isHeal = HEAL_SPECIALS.has(specialId);
         if (outcome.setToFull) {
           target.heroStats.hero.health = 100; // o tu healthMax real
@@ -156,7 +153,7 @@ export class BattleService {
         const dmgFlat = outcome.flatDamageBonus ?? 0;
         if (atk || def || dmgFlat) this.applyTempBuff(source, { atk, def, dmgFlat });
 
-        // pegar básico automático (si quieres que SIEMPRE pegue, elimina el chequeo isHeal)
+        // pegar básico automático (no va a pegar el basico si la accion especial es de tipo HEAL)
         if (!isHeal) {
           damage = this.calculateDamage(source, target);
         }
@@ -174,41 +171,6 @@ export class BattleService {
         effect = "SPECIAL_SKILL";
         break;
       }
-
-      case "MASTER_SKILL": {
-        if (!action.skillId) throw new Error("skillId requerido para MASTER_SKILL");
-
-        // 1) Resolver la habilidad épica (sin poder, solo cooldown)
-        const masterId = action.skillId as MasterId;
-        const outcome = MasterSkillService.resolveMaster(source, masterId);
-
-        // 2) Aplicar el efecto de la habilidad épica
-        const atk = outcome.tempAttack ?? 0;
-        const def = outcome.tempDefense ?? 0;
-        const dmgFlat = outcome.flatDamageBonus ?? 0;
-
-        // 3) Aplicar buffs (si hay)
-        if (atk || def || dmgFlat) this.applyTempBuff(source, { atk, def, dmgFlat });
-
-        // 4) Pegar básico si es necesario (todas las épicas pegan un básico)
-        if (!outcome.setToFull && !outcome.healGroup) {
-          damage = this.calculateDamage(source, target);
-        }
-
-        // 5) Sanación grupal de la habilidad épica (si aplica)
-        if (outcome.healGroup) {
-          const team = battle.teams.find(t => !!t.findPlayer(source.username));
-          if (team) {
-            team.players.forEach(p => {
-              p.heroStats.hero.health = p.heroStats.hero.health + outcome.healGroup!;
-            });
-          }
-        }
-
-        // 6) Log de la habilidad épica
-        effect = "MASTER_SKILL";
-        break;
-      }
     }
 
     // 3) Aplicar daño
@@ -220,7 +182,7 @@ export class BattleService {
     // 5) Avanzar turno
     battle.advanceTurn();
 
-    // ** Clave: quitar el buff temporal del actor entrante ***
+    // *** CLAVE: quitar el buff del jugador que VA A ENTRAR ahora mismo ***
     const incomingId = battle.getCurrentActor();               // quien juega AHORA
     const incoming   = battle.findPlayer(incomingId);
     if (incoming) this.removeBuffIfPendingAtTurnStart(incoming);
@@ -245,11 +207,11 @@ export class BattleService {
       source: { ...source.heroStats.hero },
       target: { ...target.heroStats.hero },
       nextTurnPlayer: battle.getCurrentActor(),
-      battle, // los clientes verán que el entrante ya no tiene el buff
+      battle,
     };
   }
 
-   private calculateDamage(source: Player, target: Player): number {
+  private calculateDamage(source: Player, target: Player): number {
     const attack = source.heroStats?.hero.attack || 0;
     const attackBoost = source.heroStats?.hero.attackBoost || { min: 0, max: 0 };
     const defense = target.heroStats?.hero.defense || 0;
@@ -263,8 +225,8 @@ export class BattleService {
   }
 
   private randomValueAplication(source: Player): number {
-    const probabilites = source.heroStats?.hero.randomEffects.map(effect => effect.percentage) || [];
-    const results = source.heroStats?.hero.randomEffects.map(effect => effect.randomEffectType) || [];
+    const probabilites = source.heroStats?.hero.randomEffects.map(e => e.percentage) || [];
+    const results = source.heroStats?.hero.randomEffects.map(e => e.randomEffectType) || [];
     const aleatoryAttackEffect = new AleatoryAttackEffect(probabilites, results);
 
     const result = aleatoryAttackEffect.generateAleatoryEffect();
