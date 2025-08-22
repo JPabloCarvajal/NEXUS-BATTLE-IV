@@ -35,6 +35,68 @@ export class BattleService {
     return battle;
   }
 
+  getBattle(roomId: string): Battle | undefined {
+    return this.battleRepository.findById(roomId);
+  }
+
+  private recoverPowerBeforeTurn(player: Player, battle: Battle) {
+    const hero = player.heroStats?.hero;
+    if (!hero) return;
+
+    const currentPower = hero.power ?? 0;
+    const maxPower = battle.initialPowers.get(player.username) ?? 0;
+    const powerToRecover = Math.min(2, maxPower - currentPower);
+
+    if (powerToRecover > 0) {
+      hero.power = currentPower + powerToRecover;
+    }
+  }
+
+    /**
+   * Verifica si algún equipo ha ganado la batalla
+   * @param battle La batalla actual
+   * @returns { winner: string | null, battleEnded: boolean }
+   */
+  private checkBattleEnd(battle: Battle): { winner: string | null, battleEnded: boolean } {
+    const teamA = battle.teams.find(t => t.id === "A");
+    const teamB = battle.teams.find(t => t.id === "B");
+
+    if (!teamA || !teamB) {
+      return { winner: null, battleEnded: false };
+    }
+
+    // Verificar si todos los miembros del equipo A están muertos
+    const teamAAllDead = teamA.players.every(player => 
+      (player.heroStats?.hero.health ?? 0) <= 0
+    );
+
+    // Verificar si todos los miembros del equipo B están muertos
+    const teamBAllDead = teamB.players.every(player => 
+      (player.heroStats?.hero.health ?? 0) <= 0
+    );
+
+    // Si ambos equipos están muertos (empate), devolver empate
+    if (teamAAllDead && teamBAllDead) {
+      battle.endBattle("DRAW");
+      return { winner: "DRAW", battleEnded: true };
+    }
+
+    // Si equipo A está muerto, gana equipo B
+    if (teamAAllDead) {
+      battle.endBattle("B");
+      return { winner: "B", battleEnded: true };
+    }
+
+    // Si equipo B está muerto, gana equipo A
+    if (teamBAllDead) {
+      battle.endBattle("A");
+      return { winner: "A", battleEnded: true };
+    }
+
+    // La batalla continúa
+    return { winner: null, battleEnded: false };
+  }
+
   generateTurnOrder(teamA: Team, teamB: Team): string[] {
     const firstTeam = Math.random() < 0.5 ? teamA : teamB;
     const secondTeam = firstTeam === teamA ? teamB : teamA;
@@ -49,10 +111,19 @@ export class BattleService {
     return order;
   }
 
+  endBattleByDisconnection(roomId: string, winner: string) {
+    const battle = this.battleRepository.findById(roomId);
+    if (!battle) throw new Error("Battle not found");
+    
+    battle.endBattle(winner);
+    this.battleRepository.save(battle);
+  }
+
   // ======================= Helpers de batalla =======================
   private allPlayers(b: Battle): Player[] {
     return b.teams.flatMap(t => t.players);
   }
+
   private opponentsOf(b: Battle, of: Player): Player[] {
     const myTeam = b.teams.find(t => t.findPlayer(of.username));
     const opp    = b.teams.find(t => t !== myTeam);
@@ -179,9 +250,21 @@ export class BattleService {
   }
 
   // ======================= Main =======================
-  handleAction(roomId: string, action: Action) {
+  handleAction(roomId: string, action: Action, skip?: boolean) {
     const battle = this.battleRepository.findById(roomId);
     if (!battle) throw new Error("Battle not found");
+
+    if (skip){
+      battle.advanceTurn();
+      return {
+        action,
+        damage: 0,
+        effect: "Lost turn",
+        ko: false,
+        nextTurnPlayer: battle.getCurrentActor(),
+        battle,
+      };
+    }
 
     // 1) Validar turno
     const currentPlayerId = battle.getCurrentActor();
@@ -302,13 +385,47 @@ export class BattleService {
       }
     }
 
+    // 4.1) Verificar si la batalla ha terminado
+    const battleResult = this.checkBattleEnd(battle);
+
+    // Si la batalla terminó, no avanzar turno ni hacer más procesamiento
+    if (battleResult.battleEnded) {
+      // 6) Log final
+      battle.battleLogger.addLog({
+        timestamp: Date.now(),
+        attacker: source.username,
+        target: target.username,
+        value: dealt,
+        effect: effect,
+      });
+
+      this.battleRepository.save(battle);
+
+      // 7) Respuesta con resultado de batalla
+      return {
+        action,
+        damage: dealt,
+        effect,
+        ko,
+        source: { ...source.heroStats.hero },
+        target: { ...target.heroStats.hero },
+        nextTurnPlayer: null, // No hay próximo turno
+        battle,
+        battleEnded: true,
+        winner: battleResult.winner,
+      };
+    }
+
     // 5) Avanzar turno
     battle.advanceTurn();
 
     // Limpia buff del que ENTRA (para que no inicie su turno buffeado)
     const incomingId = battle.getCurrentActor();
     const incoming   = battle.findPlayer(incomingId);
-    if (incoming) this.removeBuffIfPendingAtTurnStart(incoming);
+    if (incoming) {
+      this.removeBuffIfPendingAtTurnStart(incoming);
+      this.recoverPowerBeforeTurn(incoming, battle);
+    }
 
     // Tick de cooldown de masters
     this.tickMastersCooldown(battle);
