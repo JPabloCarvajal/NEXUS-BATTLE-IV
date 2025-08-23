@@ -10,8 +10,20 @@ export class Battle {
     public turnOrder: string[],
     public currentTurnIndex: number = 0,
     public state: "WAITING" | "IN_PROGRESS" | "FINISHED" = "WAITING",
-    public battleLogger: BattleLogger = new BattleLogger()
-  ) {}
+    public battleLogger: BattleLogger = new BattleLogger(),
+    public readonly initialPowers: Map<string, number> = new Map(),
+    public winner: string | null = null,
+    public isEnded: boolean = false
+  ) {
+      teams.forEach(team => {
+      team.players.forEach(player => {
+        const hero = player.heroStats?.hero;
+        if (hero) {
+          this.initialPowers.set(player.username, hero.power ?? 0);
+        }
+      });
+    });
+  }
 
   startBattle() {
     this.state = "IN_PROGRESS";
@@ -36,5 +48,11 @@ export class Battle {
 
   advanceTurn() {
     this.currentTurnIndex = this.currentTurnIndex + 1;
+  }
+
+  endBattle(winner: string) {
+    this.winner = winner;
+    this.isEnded = true;
+    this.state = "FINISHED"; // Si tienes una propiedad status
   }
 }
