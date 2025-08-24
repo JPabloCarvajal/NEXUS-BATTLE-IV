@@ -11,7 +11,7 @@ export class Battle {
     public currentTurnIndex: number = 0,
     public state: "WAITING" | "IN_PROGRESS" | "FINISHED" = "WAITING",
     public battleLogger: BattleLogger = new BattleLogger(),
-    public readonly initialPowers: Map<string, number> = new Map(),
+    public initialPowers: Map<string, number> = new Map(),
     public winner: string | null = null,
     public isEnded: boolean = false
   ) {
@@ -23,6 +23,19 @@ export class Battle {
         }
       });
     });
+  }
+
+  static fromJSON(data: any): Battle {
+    const teams = data.teams.map((t: any) => Team.fromJSON(t));
+    const battle = new Battle(data.id, data.roomId, teams, data.turnOrder);
+    battle.currentTurnIndex = data.currentTurnIndex;
+    battle.state = data.state;
+    battle.battleLogger = new BattleLogger(data.battleLogger.logs);
+    battle.initialPowers = new Map(Object.entries(data.initialPowers || {}));
+    battle.winner = data.winner;
+    battle.isEnded = data.isEnded;
+
+    return battle;
   }
 
   startBattle() {
