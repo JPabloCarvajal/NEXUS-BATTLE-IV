@@ -27,6 +27,24 @@ export class Room {
     this.config = config;
   }
 
+  static fromJSON(data: any): Room {
+    const room = new Room({
+      id: data.config.id,
+      mode: data.config.mode,
+      allowAI: data.config.allowAI,
+      credits: data.config.credits,
+      heroLevel: data.config.heroLevel,
+      ownerId: data.config.ownerId,
+    });
+
+    room.players = data.players.map((p: any) => Player.fromJSON(p));
+    room.teamA = data.teamA.map((p: any) => Player.fromJSON(p));
+    room.teamB = data.teamB.map((p: any) => Player.fromJSON(p));
+    room.phase = data.phase;
+
+    return room;
+  }
+
   get id() {
     return this.config.id;
   }
@@ -61,6 +79,22 @@ export class Room {
 
   get Players() {
       return this.players;
+  }
+
+  set Players(players: Player[]) {
+      this.players = players;
+  }
+
+  set TeamA(players: Player[]) {
+      this.teamA = players;
+  }
+
+  set TeamB(players: Player[]) {
+      this.teamB = players;
+  }
+
+  set Phase(phase: RoomPhase) {
+      this.phase = phase;
   }
 
   addPlayer(player: Player) {

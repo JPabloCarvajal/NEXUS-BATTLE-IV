@@ -16,20 +16,22 @@ export class InMemoryRoomRepository implements RoomRepository {
     return InMemoryRoomRepository.instance;
   }
 
-  save(room: Room): void {
+  save(room: Room): Promise<void> {
     this.rooms.set(room.id, room);
+    return Promise.resolve();
   }
 
-  findById(id: string): Room | undefined {
-    return this.rooms.get(id);
+  findById(id: string): Promise<Room | undefined> {
+    return Promise.resolve(this.rooms.get(id));
   }
 
-  delete(id: string): void {
+  delete(id: string): Promise<void> {
     this.rooms.delete(id);
+    return Promise.resolve();
   }
 
-  findAll(): Room[] {
-    return Array.from(this.rooms.values());
+  findAll(): Promise<Room[]> {
+    return Promise.resolve(Array.from(this.rooms.values()));
   }
 }
 

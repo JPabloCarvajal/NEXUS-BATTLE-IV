@@ -133,8 +133,79 @@ export interface Equipped {
   epicAbilites: EpicAbility[];
 }
 
-export interface HeroStats {
-  hero: Hero;
+export class HeroStats {
+    hero: Hero;
   equipped: Equipped;
+
+  constructor(hero: Hero, equipped: Equipped) {
+    this.hero = hero;
+    this.equipped = equipped;
+  }
+
+  static fromJSON(parsed: any): HeroStats {
+    const hero: Hero = {
+      heroType: parsed.hero.heroType,
+      level: parsed.hero.level,
+      power: parsed.hero.power,
+      health: parsed.hero.health,
+      defense: parsed.hero.defense,
+      attack: parsed.hero.attack,
+      attackBoost: parsed.hero.attackBoost as AttackBoost,
+      damage: parsed.hero.damage as Damage,
+      specialActions: (parsed.hero.specialActions || []).map(
+        (sa: any): SpecialAction => ({
+          name: sa.name,
+          actionType: sa.actionType,
+          powerCost: sa.powerCost,
+          effect: sa.effect as Effect[],
+          cooldown: sa.cooldown,
+          isAvailable: sa.isAvailable,
+        })
+      ),
+      randomEffects: (parsed.hero.randomEffects || []).map(
+        (re: any): RandomEffect => ({
+          randomEffectType: re.randomEffectType,
+          percentage: re.percentage,
+          valueApply: re.valueApply as AttackBoost,
+        })
+      )
+    };
+
+    const equipped: Equipped = {
+      items: (parsed.equipped?.items || []).map(
+        (i: any): Item => ({
+          name: i.name,
+          effects: i.effects as Effect[],
+          dropRate: i.dropRate,
+        })
+      ),
+      armors: (parsed.equipped?.armors || []).map(
+        (a: any): Armor => ({
+          name: a.name,
+          effects: a.effects as Effect[],
+          dropRate: a.dropRate,
+        })
+      ),
+      weapons: (parsed.equipped?.weapons || []).map(
+        (w: any): Weapon => ({
+          name: w.name,
+          effects: w.effects as Effect[],
+          dropRate: w.dropRate,
+        })
+      ),
+      epicAbilites: (parsed.equipped?.epicAbilites || []).map(
+        (ea: any): EpicAbility => ({
+          name: ea.name,
+          compatibleHeroType: ea.compatibleHeroType,
+          effects: ea.effects as Effect[],
+          cooldown: ea.cooldown,
+          isAvailable: ea.isAvailable,
+          masterChance: ea.masterChance,
+        })
+      )
+    };
+
+    return new HeroStats(hero, equipped);
+  }
 }
 
