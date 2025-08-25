@@ -8,7 +8,7 @@ export default class RedisRoomRepository implements RoomRepository {
 
     constructor() {
         this.redisClient = createClient({
-            url: "redis://nexus-battle-iv-redis:6379"
+            url: "redis://localhost:6379"
         });
 
         this.redisClient.on("error", (err) => console.error("Redis Client Error", err));
