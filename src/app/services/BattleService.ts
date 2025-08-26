@@ -20,8 +20,8 @@ export class BattleService {
   ) {}
 
   // ======================= Battle bootstrap =======================
-  createBattleFromRoom(roomId: string): Battle {
-    const room = this.roomRepository.findById(roomId);
+  async createBattleFromRoom(roomId: string): Promise<Battle> {
+    const room = await this.roomRepository.findById(roomId);
     if (!room) throw new Error("Room not found");
 
     const teamA = new Team("A", room.TeamA);
@@ -35,8 +35,8 @@ export class BattleService {
     return battle;
   }
 
-  getBattle(roomId: string): Battle | undefined {
-    return this.battleRepository.findById(roomId);
+  async getBattle(roomId: string): Promise<Battle | undefined> {
+    return await this.battleRepository.findById(roomId);
   }
 
   private recoverPowerBeforeTurn(player: Player, battle: Battle) {
@@ -111,12 +111,12 @@ export class BattleService {
     return order;
   }
 
-  endBattleByDisconnection(roomId: string, winner: string) {
-    const battle = this.battleRepository.findById(roomId);
+  async endBattleByDisconnection(roomId: string, winner: string) {
+    const battle = await this.battleRepository.findById(roomId);
     if (!battle) throw new Error("Battle not found");
     
     battle.endBattle(winner);
-    this.battleRepository.save(battle);
+    await this.battleRepository.save(battle);
   }
 
   // ======================= Helpers de batalla =======================
@@ -249,13 +249,19 @@ export class BattleService {
     }
   }
 
+  async cleanupRoomBattle(roomId: string) {
+    await this.battleRepository.delete(roomId);
+    await this.roomRepository.delete(roomId);
+  }
+
   // ======================= Main =======================
-  handleAction(roomId: string, action: Action, skip?: boolean) {
-    const battle = this.battleRepository.findById(roomId);
+  async handleAction(roomId: string, action: Action, skip?: boolean) {
+    const battle = await this.battleRepository.findById(roomId);
     if (!battle) throw new Error("Battle not found");
 
     if (skip){
       battle.advanceTurn();
+      this.battleRepository.save(battle);
       return {
         action,
         damage: 0,

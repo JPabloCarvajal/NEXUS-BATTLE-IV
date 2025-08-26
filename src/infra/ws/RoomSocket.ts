@@ -1,14 +1,14 @@
 import { Server } from "socket.io";
-import { InMemoryRoomRepository } from "../db/InMemoryRoomRepository";
 import { SetPlayerReady } from "../../app/useCases/rooms/SetPlayerReady";
 import { AssignHeroStats } from "../../app/useCases/rooms/AssignHeroStats";
 import { BattleService } from "../../app/services/BattleService";
 import { LeaveRoom } from "../../app/useCases/rooms/LeaveRoom";
 import { BattleSocket } from "./BattleSocket";
-import InMemoryBattleRepository from "../db/InMemoryBattleRepository";
+import RedisRoomRepository from "../db/RedisRoomRepository";
+import RedisBattleRepository from "../db/RedisBattleRepository";
 
-const roomRepo = InMemoryRoomRepository.getInstance();
-const battleRepo = InMemoryBattleRepository.getInstance();
+const roomRepo = RedisRoomRepository.getInstance();
+const battleRepo = RedisBattleRepository.getInstance();
 const setReady = new SetPlayerReady(roomRepo);
 const assignStats = new AssignHeroStats(roomRepo);
 const battleService = new BattleService(roomRepo, battleRepo);
@@ -29,12 +29,12 @@ export function setupRoomSocket(io: Server) {
 
     socket.on("playerReady", async ({ roomId, playerId, team }) => {
       try {
-        const allReady = setReady.execute(roomId, playerId, team);
+        const allReady = await setReady.execute(roomId, playerId, team);
         io.to(roomId).emit("playerReady", { playerId });
 
         if (allReady) {
           io.to(roomId).emit("allReady", { message: "All players ready, preparing battle..." });
-          const battle = battleService.createBattleFromRoom(roomId);
+          const battle = await battleService.createBattleFromRoom(roomId);
           const sockets = await io.in(roomId).fetchSockets();
           sockets.forEach((remoteSocket) => {
             const realSocket = io.sockets.sockets.get(remoteSocket.id);
@@ -71,9 +71,9 @@ export function setupRoomSocket(io: Server) {
       }
     });
   
-    socket.on("leaveRoom", ({ roomId, playerId }: { roomId: string, playerId: string }) => {
+    socket.on("leaveRoom", async ({ roomId, playerId }: { roomId: string, playerId: string }) => {
       try {
-        const closed = leaveRoom.execute(roomId, playerId);
+        const closed = await leaveRoom.execute(roomId, playerId);
 
         socket.leave(roomId);
 

@@ -33,9 +33,9 @@ export class BattleSocket {
       }
     });
     
-    socket.on("submitAction", ({ roomId, action }) => {
+    socket.on("submitAction", async ({ roomId, action }) => {
       try {
-        const result = this.battleService.handleAction(roomId, action);
+        const result = await this.battleService.handleAction(roomId, action);
         if (result.battleEnded) {
           this.io.to(roomId).emit("battleEnded", { winner: result.winner });
           this.cleanupRoom(roomId);
@@ -60,7 +60,7 @@ export class BattleSocket {
     });
   }
 
-  private handlePlayerDisconnect(socket: Socket) {
+  private async handlePlayerDisconnect(socket: Socket) {
   console.log("🔌 DISCONNECT EVENT TRIGGERED");
   console.log("Socket ID:", socket.id);
   
@@ -87,7 +87,7 @@ export class BattleSocket {
 
   try {
     console.log("🎯 Getting battle for roomId:", roomId);
-    const battle = this.battleService.getBattle(roomId);
+    const battle = await this.battleService.getBattle(roomId);
     
     console.log("⚔️ Battle status:");
     console.log("  - battle exists:", !!battle);
@@ -145,7 +145,6 @@ export class BattleSocket {
     this.cleanupRoom(roomId);
     
     console.log("✅ Disconnect handling completed successfully");
-
   } catch (err: any) {
     console.error("💥 ERROR handling disconnect:", err.message);
     console.error("Stack trace:", err.stack);
@@ -234,11 +233,11 @@ private getOpponentTeam(battle: any, player: any): string {
   }
 
 
-    private handleTurnTimeout(roomId: string) {
+    private async handleTurnTimeout(roomId: string) {
     console.log("⏰ Turn timeout for room:", roomId);
     
     try {
-      const battle = this.battleService.getBattle(roomId);
+      const battle = await this.battleService.getBattle(roomId);
       if (!battle || battle.isEnded) return;
 
       // Obtener jugador actual
@@ -250,11 +249,11 @@ private getOpponentTeam(battle: any, player: any): string {
       });
 
       // Procesar la acción automática
-      const result = this.battleService.handleAction(roomId, {
+      const result = await this.battleService.handleAction(roomId, {
         sourcePlayerId: "",
         targetPlayerId: "",
         type: "BASIC_ATTACK"
-      }     ,
+      },
       true
     );
       
@@ -273,11 +272,11 @@ private getOpponentTeam(battle: any, player: any): string {
   }
 
 
-    private handleBattleTimeout(roomId: string) {
+    private async handleBattleTimeout(roomId: string) {
     console.log("⏰ Battle timeout (6 minutes) for room:", roomId);
     
     try {
-      const battle = this.battleService.getBattle(roomId);
+      const battle = await this.battleService.getBattle(roomId);
       if (!battle || battle.isEnded) return;
 
       const winnerTeam = this.calculateWinnerByHealth(battle);
@@ -352,6 +351,8 @@ private getOpponentTeam(battle: any, player: any): string {
       this.playerSocketMap.delete(socketId);
     });
     this.roomPlayerMap.delete(roomId);
+
+    this.battleService.cleanupRoomBattle(roomId);
     
     console.log("✅ Room cleanup completed");
   }

@@ -16,14 +16,16 @@ export default class InMemoryBattleRepository implements BattleRepository{
     }
 
 
-    save(battle: Battle): void {
+    save(battle: Battle): Promise<void> {
         this.battles.set(battle.id, battle);
+        return Promise.resolve();
     }
-    findById(battleId: string): Battle | undefined {
-        return this.battles.get(battleId);
+    findById(battleId: string): Promise<Battle | undefined> {
+        return Promise.resolve(this.battles.get(battleId));
     }
-    delete(battleId: string): void {
+    delete(battleId: string): Promise<void> {
         this.battles.delete(battleId);
+        return Promise.resolve();
     }
     
 }

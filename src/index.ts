@@ -3,12 +3,23 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { setupRoomSocket } from "./infra/ws/RoomSocket";
 import { roomRouter } from "./infra/http/RoomController";
+import cors from "cors";
 
 const app = express();
 const httpServer = createServer(app);
 
+app.use(cors({
+  origin: "http://localhost:4200",
+  methods: ["GET", "POST"],
+  credentials: true
+}));
+
 const io = new Server(httpServer, {
-  cors: { origin: "*" }
+    cors: {
+    origin: "http://localhost:4200",
+    methods: ["GET", "POST"],
+    credentials: false
+  }
 });
 
 setupRoomSocket(io);

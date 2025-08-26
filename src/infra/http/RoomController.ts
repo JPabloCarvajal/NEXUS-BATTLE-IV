@@ -1,11 +1,11 @@
 import { Request, Response, Router } from "express";
 import { CreateRoom } from "../../app/useCases/rooms/CreateRoom";
 import { JoinRoom } from "../../app/useCases/rooms/JoinRoom";
-import { InMemoryRoomRepository } from "../db/InMemoryRoomRepository";
 import { LeaveRoom } from "../../app/useCases/rooms/LeaveRoom";
 import { GetAllRooms } from "../../app/useCases/rooms/GetAllRooms";
+import RedisRoomRepository from "../db/RedisRoomRepository";
 
-const repo = InMemoryRoomRepository.getInstance();
+const repo = RedisRoomRepository.getInstance();
 const createRoom = new CreateRoom(repo);
 const joinRoom = new JoinRoom(repo);
 const leaveRoom = new LeaveRoom(repo);
@@ -15,9 +15,9 @@ export const roomRouter = Router();
 
 
 
-roomRouter.get("/rooms", (_req: Request, res: Response) => {
+roomRouter.get("/rooms", async (_req: Request, res: Response) => {
   try {
-    const rooms = getAllRooms.execute();
+    const rooms = await getAllRooms.execute();
     res.status(200).json(rooms);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
