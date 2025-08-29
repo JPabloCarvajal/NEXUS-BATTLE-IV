@@ -1,6 +1,9 @@
 // infrastructure/websockets/BattleSocket.ts
 import { Server, Socket } from "socket.io";
 import { BattleService } from "../../app/services/BattleService";
+import { Battle } from "../../domain/entities/Battle";
+import { Player } from "../../domain/entities/Player";
+import { Team } from "../../domain/entities/Team";
 
 export class BattleSocket {
 
@@ -161,7 +164,7 @@ export class BattleSocket {
     const timer = setTimeout(() => {
       this.handleBattleTimeout(roomId);
     }, 6 * 60 * 1000); // 6 minutos
-    
+
     this.battleTimers.set(roomId, timer);
   }
 
@@ -272,7 +275,7 @@ private getOpponentTeam(battle: any, player: any): string {
   }
 
 
-    private async handleBattleTimeout(roomId: string) {
+  private async handleBattleTimeout(roomId: string) {
     console.log("⏰ Battle timeout (6 minutes) for room:", roomId);
     
     try {
@@ -296,21 +299,21 @@ private getOpponentTeam(battle: any, player: any): string {
     }
   }
 
-    private calculateWinnerByHealth(battle: any): string {
+  private calculateWinnerByHealth(battle: Battle): string {
     console.log("🏥 Calculating winner by total health");
     
     let teamAHealth = 0;
     let teamBHealth = 0;
     
-    battle.teams.forEach((team: any) => {
-      const teamHealth = team.players.reduce((total: number, player: any) => {
-        const health = player.heroStats?.hero?.health || 0;
-        return total + Math.max(0, health); // No contar salud negativa
+    battle.teams.forEach((team: Team) => {
+      const teamHealth = team.players.reduce((total: number, player: Player) => {
+        const health = player.heroStats?.hero?.health;
+        return total + Math.max(0, health);
       }, 0);
       
-      if (team.name === "A") {
+      if (team.id === "A") {
         teamAHealth = teamHealth;
-      } else if (team.name === "B") {
+      } else if (team.id === "B") {
         teamBHealth = teamHealth;
       }
     });

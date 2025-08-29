@@ -9,14 +9,14 @@ const app = express();
 const httpServer = createServer(app);
 
 app.use(cors({
-  origin: "http://localhost:4200",
+  origin: ["http://localhost:4200", "http://207.248.81.78:4200"],
   methods: ["GET", "POST"],
   credentials: true
 }));
 
 const io = new Server(httpServer, {
     cors: {
-    origin: "http://localhost:4200",
+    origin: ["http://localhost:4200", "http://207.248.81.78:4200"],
     methods: ["GET", "POST"],
     credentials: false
   }
