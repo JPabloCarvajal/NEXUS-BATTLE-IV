@@ -49,6 +49,7 @@ export function setupRoomSocket(io: Server) {
             { 
               message: "Battle has started!",
               turns: battle.turnOrder,
+              battle: battle
             });
         } 
       } catch (err: any) {

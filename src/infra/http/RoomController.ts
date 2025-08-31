@@ -20,45 +20,45 @@ roomRouter.get("/rooms", async (_req: Request, res: Response) => {
   try {
     const rooms = await getAllRooms.execute();
     res.status(200).json(rooms);
-  } catch (error) {
-    res.status(500).json({ error });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
 }); 
 
-roomRouter.post("/rooms", (req: Request, res: Response) => {
+roomRouter.post("/rooms", async (req: Request, res: Response) => {
   try {
     const { id, mode, allowAI, credits, heroLevel, ownerId } = req.body;
     const room = createRoom.execute({ id, mode, allowAI, credits, heroLevel, ownerId });
     res.status(201).json({ roomId: room.id, settings: room.settings });
-  } catch (error) {
-    res.status(400).json({ error });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 });
 
-roomRouter.post("/rooms/:roomId/join", (req: Request, res: Response) => {
+roomRouter.post("/rooms/:roomId/join", async(req: Request, res: Response) => {
   try {
     const { playerId, heroLevel, heroStats } = req.body;
     const roomId = req.params['roomId'];
     if (!roomId) {
-      throw new Error("Missing roomId parameter");
+      throw new Error("Parametro 'roomId' es requerido");
     }
-    joinRoom.execute(roomId, { username: playerId, heroLevel, ready: false, heroStats: heroStats });
-    res.status(200).json({ message: "Player joined" });
-  } catch (error) {
-    res.status(400).json({ error });
+    await joinRoom.execute(roomId, { username: playerId, heroLevel, ready: false, heroStats: heroStats });
+    res.status(200).json({ message: "Jugador unido" });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 });
 
-roomRouter.post("/rooms/:roomId/leave", (req: Request, res: Response) => {
+roomRouter.post("/rooms/:roomId/leave", async (req: Request, res: Response) => {
   try {
     const roomId = req.params['roomId'];
     const { playerId } = req.body;
     if (!roomId) throw new Error("Missing roomId parameter");
     if (!playerId) throw new Error("Missing playerId in body");
 
-    const closed = leaveRoom.execute(roomId, playerId);
+    const closed = await leaveRoom.execute(roomId, playerId);
     res.status(200).json({ message: "Player left", roomClosed: closed });
-  } catch (error) {
-    res.status(400).json({ error });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 });

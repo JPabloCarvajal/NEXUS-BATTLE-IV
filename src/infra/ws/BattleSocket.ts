@@ -38,6 +38,7 @@ export class BattleSocket {
     
     socket.on("submitAction", async ({ roomId, action }) => {
       try {
+        console.log(`Action received in room ${roomId}:`, action);
         const result = await this.battleService.handleAction(roomId, action);
         if (result.battleEnded) {
           this.io.to(roomId).emit("battleEnded", { winner: result.winner });
