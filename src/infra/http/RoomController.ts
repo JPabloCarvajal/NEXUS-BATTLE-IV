@@ -3,9 +3,10 @@ import { CreateRoom } from "../../app/useCases/rooms/CreateRoom";
 import { JoinRoom } from "../../app/useCases/rooms/JoinRoom";
 import { LeaveRoom } from "../../app/useCases/rooms/LeaveRoom";
 import { GetAllRooms } from "../../app/useCases/rooms/GetAllRooms";
-import RedisRoomRepository from "../db/RedisRoomRepository";
+//import RedisRoomRepository from "../db/RedisRoomRepository";
+import { InMemoryRoomRepository } from "../db/InMemoryRoomRepository";
 
-const repo = RedisRoomRepository.getInstance();
+const repo = InMemoryRoomRepository.getInstance();
 const createRoom = new CreateRoom(repo);
 const joinRoom = new JoinRoom(repo);
 const leaveRoom = new LeaveRoom(repo);
@@ -19,8 +20,8 @@ roomRouter.get("/rooms", async (_req: Request, res: Response) => {
   try {
     const rooms = await getAllRooms.execute();
     res.status(200).json(rooms);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 }); 
 
@@ -29,8 +30,8 @@ roomRouter.post("/rooms", (req: Request, res: Response) => {
     const { id, mode, allowAI, credits, heroLevel, ownerId } = req.body;
     const room = createRoom.execute({ id, mode, allowAI, credits, heroLevel, ownerId });
     res.status(201).json({ roomId: room.id, settings: room.settings });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    res.status(400).json({ error });
   }
 });
 
@@ -43,8 +44,8 @@ roomRouter.post("/rooms/:roomId/join", (req: Request, res: Response) => {
     }
     joinRoom.execute(roomId, { username: playerId, heroLevel, ready: false, heroStats: heroStats });
     res.status(200).json({ message: "Player joined" });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    res.status(400).json({ error });
   }
 });
 
@@ -57,7 +58,7 @@ roomRouter.post("/rooms/:roomId/leave", (req: Request, res: Response) => {
 
     const closed = leaveRoom.execute(roomId, playerId);
     res.status(200).json({ message: "Player left", roomClosed: closed });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    res.status(400).json({ error });
   }
 });
