@@ -31,6 +31,7 @@ export function setupRoomSocket(io: Server) {
 
     socket.on("playerReady", async ({ roomId, playerId, team }) => {
       try {
+        console.log(`Player ${playerId} is ready in room ${roomId}`);
         const allReady = await setReady.execute(roomId, playerId, team);
         io.to(roomId).emit("playerReady", { playerId });
 
@@ -59,6 +60,7 @@ export function setupRoomSocket(io: Server) {
 
     socket.on("setHeroStats", ({ roomId, playerId, stats }) => {
       try {
+        console.log(`Setting hero stats for player ${playerId} in room ${roomId}`);
         assignStats.execute(roomId, playerId, stats);
         io.to(roomId).emit("heroStatsSet", { playerId, stats });
       } catch (err: any) {
