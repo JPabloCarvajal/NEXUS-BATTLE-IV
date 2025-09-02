@@ -4,11 +4,13 @@ import { AssignHeroStats } from "../../app/useCases/rooms/AssignHeroStats";
 import { BattleService } from "../../app/services/BattleService";
 import { LeaveRoom } from "../../app/useCases/rooms/LeaveRoom";
 import { BattleSocket } from "./BattleSocket";
-import RedisRoomRepository from "../db/RedisRoomRepository";
-import RedisBattleRepository from "../db/RedisBattleRepository";
+// import RedisRoomRepository from "../db/RedisRoomRepository";
+// import RedisBattleRepository from "../db/RedisBattleRepository";
+import { InMemoryRoomRepository } from "../db/InMemoryRoomRepository";
+import InMemoryBattleRepository from "../db/InMemoryBattleRepository";
 
-const roomRepo = RedisRoomRepository.getInstance();
-const battleRepo = RedisBattleRepository.getInstance();
+const roomRepo = InMemoryRoomRepository.getInstance();
+const battleRepo = InMemoryBattleRepository.getInstance();
 const setReady = new SetPlayerReady(roomRepo);
 const assignStats = new AssignHeroStats(roomRepo);
 const battleService = new BattleService(roomRepo, battleRepo);
@@ -29,6 +31,7 @@ export function setupRoomSocket(io: Server) {
 
     socket.on("playerReady", async ({ roomId, playerId, team }) => {
       try {
+        console.log(`Player ${playerId} is ready in room ${roomId}`);
         const allReady = await setReady.execute(roomId, playerId, team);
         io.to(roomId).emit("playerReady", { playerId });
 
@@ -42,10 +45,12 @@ export function setupRoomSocket(io: Server) {
               battleSocket.attachHandlers(realSocket);
             }
           });
+          console.log("Battle created, notifying players...");
           io.to(roomId).emit("battleStarted", 
             { 
               message: "Battle has started!",
               turns: battle.turnOrder,
+              battle: battle
             });
         } 
       } catch (err: any) {
@@ -55,6 +60,7 @@ export function setupRoomSocket(io: Server) {
 
     socket.on("setHeroStats", ({ roomId, playerId, stats }) => {
       try {
+        console.log(`Setting hero stats for player ${playerId} in room ${roomId}`);
         assignStats.execute(roomId, playerId, stats);
         io.to(roomId).emit("heroStatsSet", { playerId, stats });
       } catch (err: any) {

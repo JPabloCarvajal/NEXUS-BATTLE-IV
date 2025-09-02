@@ -99,13 +99,13 @@ export class Room {
 
   addPlayer(player: Player) {
     if (this.players.length >= this.capacity) {
-      throw new Error("Room is full");
+      throw new Error("Habitación llena");
     }
     if (this.players.find(item => item.username === player.username)){
-      throw new Error("User already in the room");
+      throw new Error("Usuario ya en la habitación");
     }
     if (player.heroLevel !== this.config.heroLevel) {
-      throw new Error("Player does not meet the hero level");
+      throw new Error("El jugador no cumple con el nivel de héroe");
     }
     this.players.push(player);
   }

@@ -8,17 +8,30 @@ import cors from "cors";
 const app = express();
 const httpServer = createServer(app);
 
+const aceptedOrigins = [
+  "http://localhost:4200",
+  "http://207.248.81.78:4200",
+  "http://207.248.81.78:8080",
+  "http://207.248.81.78:80",
+  "http://localhost:8080",
+  "http://localhost:3000",
+  "http://localhost:80",
+  "http://egypt.bucaramanga.upb.edu.co",
+  "http://egypt.bucaramanga.upb.edu.co:80",
+  "http://egypt.bucaramanga.upb.edu.co:8080"
+]
+
 app.use(cors({
-  origin: "http://localhost:4200",
+  origin: aceptedOrigins,
   methods: ["GET", "POST"],
   credentials: true
 }));
 
 const io = new Server(httpServer, {
     cors: {
-    origin: "http://localhost:4200",
+    origin: aceptedOrigins,
     methods: ["GET", "POST"],
-    credentials: false
+    credentials: true
   }
 });
 

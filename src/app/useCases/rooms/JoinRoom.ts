@@ -6,7 +6,7 @@ export class JoinRoom {
 
   async execute(roomId: string, player: Player): Promise<void> {
     const room = await this.repo.findById(roomId);
-    if (!room) throw new Error("Room not found");
+    if (!room) throw new Error("Habitación no encontrada");
     room.addPlayer(player);
     await this.repo.save(room);
   }
