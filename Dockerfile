@@ -1,21 +1,56 @@
-# Dockerfile for NEXUS-BATTLE-IV Node.js project
-# Use official Node.js LTS image
-FROM node:20-alpine
+# ================================
+# Build Stage
+# ================================
+FROM node:20-alpine AS builder
 
-# Set working directory
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if exists)
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the project files
+# Copy package files
 COPY . .
 
-# Expose port (change if your app uses a different port)
+# Install all dependencies (including dev)
+RUN npm ci --include=dev
+
+# Build the application
+RUN npm run build
+
+# ================================
+# Runtime Stage
+# ================================
+FROM node:20-alpine AS runtime
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    tini \
+    dumb-init && \
+    rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+# Copy built application from builder stage
+COPY --from=builder --chown=nextjs:nodejs /app/build ./build
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
+
+# Switch to non-root user
+USER nextjs
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+
+# Expose port
 EXPOSE 3000
 
-# Start the application (adjust if your entry point is different)
-CMD ["npm", "run", "dev"]
+# Use tini as init system
+ENTRYPOINT ["tini", "--"]
+
+# Start application
+CMD ["node", "build/src/index.js"]

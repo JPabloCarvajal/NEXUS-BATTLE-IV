@@ -265,7 +265,7 @@ const swaggerOptions = {
     format: 'json',
     swaggerDefinition: doc,
     definition: doc,
-    apis: ['./**/*.ts'],
+    apis: ['./**/*.ts', './build/**/*.js'],
 };
 
 const swaggerConfig = swaggerJsdoc(swaggerOptions);
