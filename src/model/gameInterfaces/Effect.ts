@@ -1,7 +1,7 @@
-import { EffectType } from "../Enums"
+import { EffectType } from "../Enums";
 
 export default interface Effect {
-    effectType: EffectType
-    value: string // 1d8 n that shi
-    durationTurns: number
+  effectType: EffectType;
+  value: string;
+  durationTurns: number;
 }

@@ -1,45 +1,45 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { setupRoomSocket } from "./infra/ws/RoomSocket";
+import setupRoomSocket from "./infra/ws/RoomSocket";
 import { roomRouter } from "./infra/http/RoomController";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import dotenv from "dotenv";
+import swaggerConfig from "../swagger";
+
+dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
 
-const aceptedOrigins = [
-  "http://localhost:4200",
-  "http://207.248.81.78:4200",
-  "http://207.248.81.78:8080",
-  "http://207.248.81.78:80",
-  "http://localhost:8080",
-  "http://localhost:3000",
-  "http://localhost:80",
-  "http://egypt.bucaramanga.upb.edu.co",
-  "http://egypt.bucaramanga.upb.edu.co:80",
-  "http://egypt.bucaramanga.upb.edu.co:8080"
-]
+const acceptedOrigins = process.env["ACCEPTED_ORIGINS"]?.split(",") ?? [];
 
-app.use(cors({
-  origin: aceptedOrigins,
-  methods: ["GET", "POST"],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: acceptedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+app.use(
+  process.env["DOC_PATH"] || "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerConfig)
+);
 
 const io = new Server(httpServer, {
-    cors: {
-    origin: aceptedOrigins,
+  cors: {
+    origin: acceptedOrigins,
     methods: ["GET", "POST"],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
 
 setupRoomSocket(io);
 
 app.use(express.json());
-app.use("/api", roomRouter);
+app.use(process.env["PATH_API"] || "/api", roomRouter);
 
-const PORT = 3000;
+const PORT = process.env["PORT"] || 3000;
 httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-

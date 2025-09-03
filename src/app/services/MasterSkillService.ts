@@ -1,5 +1,9 @@
 // src/app/services/MasterSkillService.ts
 import { Player } from "../../domain/entities/Player";
+import { Hero } from "../../domain/entities/HeroStats";
+type HeroWithBuff = Hero & {
+  __masterCd?: Record<string, number>;
+};
 
 export type MasterId =
   | "MASTER.TANK_GOLPE_DEFENSA"
@@ -13,21 +17,21 @@ export type MasterId =
 
 export interface MasterOutcome {
   // Efectos globales (para TODOS menos el caster; se decide en BattleService)
-  globalAttackPlus?: number;   // +ATK
-  globalDamagePlus?: number;   // +DMG plano (se suma a min/max)
-  globalLifePlus?: number;     // +HP instantáneo
-  globalHealAll?: number;      // heal instantáneo a todos
+  globalAttackPlus?: number; // +ATK
+  globalDamagePlus?: number; // +DMG plano (se suma a min/max)
+  globalLifePlus?: number; // +HP instantáneo
+  globalHealAll?: number; // heal instantáneo a todos
 
   // Efectos sobre oponentes
   opponentPowerMinus?: number; // -Power a rivales (min 0)
 
   // Efectos SOLO para el caster (épico por tipo)
-  casterLifePlus?: number;         // +HP instantáneo
-  casterDamagePlus?: number;       // +DMG plano (buff temporal)
-  casterCritPlusPct?: number;      // +% crítico (ajusta tabla de efectos del caster)
-  casterImmuneNextHit?: boolean;   // inmune al siguiente golpe recibido
+  casterLifePlus?: number; // +HP instantáneo
+  casterDamagePlus?: number; // +DMG plano (buff temporal)
+  casterCritPlusPct?: number; // +% crítico (ajusta tabla de efectos del caster)
+  casterImmuneNextHit?: boolean; // inmune al siguiente golpe recibido
   casterReflectHalfNextHit?: boolean; // refleja 50% del siguiente golpe recibido
-  casterRezOnce20?: boolean;       // revive a un aliado 1 vez al 20% (simple)
+  casterRezOnce20?: boolean; // revive a un aliado 1 vez al 20% (simple)
 
   // Texto informativo (opcional)
   label: string;
@@ -45,14 +49,15 @@ export const MASTER_PROBABILITIES: Record<MasterId, number> = {
   "MASTER.MEDIC_REANIMADOR_3000": 0.001,
 };
 
-const randBetween = (a: number, b: number) => Math.floor(Math.random() * (b - a + 1)) + a;
+const randBetween = (a: number, b: number) =>
+  Math.floor(Math.random() * (b - a + 1)) + a;
 
 /** Cooldown de masters: hero.__masterCd[id] */
-function getCd(hero: any, id: MasterId) {
+function getCd(hero: HeroWithBuff, id: MasterId) {
   const cdMap = (hero.__masterCd ?? {}) as Record<string, number>;
   return cdMap[id] ?? 0;
 }
-function setCd(hero: any, id: MasterId, turns: number) {
+function setCd(hero: HeroWithBuff, id: MasterId, turns: number) {
   if (!hero.__masterCd) hero.__masterCd = {};
   hero.__masterCd[id] = turns;
 }
@@ -64,7 +69,7 @@ export default class MasterSkillService {
    * - Deja CD = 2 turnos (se “tickea” en BattleService).
    */
   static resolveMaster(source: Player, id: MasterId): MasterOutcome {
-    const h: any = source.heroStats?.hero;
+    const h: HeroWithBuff | undefined = source.heroStats?.hero;
     if (!h) throw new Error("Hero not found");
     if (getCd(h, id) > 0) throw new Error("Master skill is on cooldown");
     setCd(h, id, 2);
@@ -73,8 +78,8 @@ export default class MasterSkillService {
       // ===== GUERRERO =====
       case "MASTER.TANK_GOLPE_DEFENSA": {
         return {
-          globalAttackPlus: 1,   // (+1 ATK a aliados EXCEPTO caster; se maneja en BattleService)
-          casterDamagePlus: 4,   // épico del tanque
+          globalAttackPlus: 1, // (+1 ATK a aliados EXCEPTO caster; se maneja en BattleService)
+          casterDamagePlus: 4, // épico del tanque
           casterCritPlusPct: 2,
           label: "Golpe de defensa",
         };
@@ -83,8 +88,8 @@ export default class MasterSkillService {
         const healAll = randBetween(1, 4); // 1d4 simplificado a 1..4 (aliados)
         return {
           globalHealAll: healAll,
-          casterLifePlus: 3,        // +3 vida al caster
-          casterCritPlusPct: 5,     //  +5% crítico al caster
+          casterLifePlus: 3, // +3 vida al caster
+          casterCritPlusPct: 5, //  +5% crítico al caster
           label: "Segundo impulso",
         };
       }
@@ -92,15 +97,15 @@ export default class MasterSkillService {
       // ===== MAGO =====
       case "MASTER.FIRE_LUZ_CEGADORA": {
         return {
-          globalLifePlus: 1,     // +1 vida a aliados (EXCEPTO caster)
-          casterDamagePlus: 2,   // épico de Fuego
+          globalLifePlus: 1, // +1 vida a aliados (EXCEPTO caster)
+          casterDamagePlus: 2, // épico de Fuego
           casterCritPlusPct: 1,
           label: "Luz cegadora",
         };
       }
       case "MASTER.ICE_FRIO_CONCENTRADO": {
         return {
-          opponentPowerMinus: 1,     // -1 power a rivales
+          opponentPowerMinus: 1, // -1 power a rivales
           casterImmuneNextHit: true, // épico de Hielo
           label: "Frío concentrado",
         };
@@ -109,15 +114,15 @@ export default class MasterSkillService {
       // ===== PÍCARO =====
       case "MASTER.VENENO_TOMA_LLEVA": {
         return {
-          globalAttackPlus: 1,            // +1 ATK a aliados (EXCEPTO caster)
+          globalAttackPlus: 1, // +1 ATK a aliados (EXCEPTO caster)
           casterReflectHalfNextHit: true, // épico de Veneno
           label: "Toma y lleva",
         };
       }
       case "MASTER.MACHETE_INTIMIDACION_SANGRIENTA": {
         return {
-          globalDamagePlus: 1,  // +1 DMG a aliados (EXCEPTO caster)
-          casterLifePlus: 2,    // épico de Machete
+          globalDamagePlus: 1, // +1 DMG a aliados (EXCEPTO caster)
+          casterLifePlus: 2, // épico de Machete
           casterCritPlusPct: 2,
           label: "Intimidación sangrienta",
         };

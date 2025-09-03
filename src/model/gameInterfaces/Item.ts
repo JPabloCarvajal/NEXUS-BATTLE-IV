@@ -1,6 +1,6 @@
-import Effect from "./Effect"
+import Effect from "./Effect";
 
-export default interface Item{
-    name: string 
-    effects: Effect[]
+export default interface Item {
+  name: string;
+  effects: Effect[];
 }

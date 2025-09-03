@@ -9,11 +9,9 @@ export class LeaveRoom {
 
     room.removePlayer(playerId);
     if (room.Players.length === 0) {
-
       this.repo.delete(roomId);
       return true;
     } else {
-
       this.repo.save(room);
       return false;
     }

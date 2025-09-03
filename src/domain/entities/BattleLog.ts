@@ -4,5 +4,5 @@ export interface BattleLog {
   target: string;
   value: number;
   effect: string | null;
-  extra?: any;
+  extra?: string;
 }

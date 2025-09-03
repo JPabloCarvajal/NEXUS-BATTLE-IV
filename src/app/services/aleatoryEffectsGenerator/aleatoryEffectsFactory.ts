@@ -1,7 +1,9 @@
+import { RandomEffectType } from "../../../domain/entities/HeroStats";
+
 export default interface AleatoryEffectsFactory {
-    /**
-     * Generates an aleatory effect.
-     * @returns {string} A string representing the generated aleatory effect.
-     */
-    generateAleatoryEffect(): any;
+  /**
+   * Generates an aleatory effect.
+   * @returns {string} A string representing the generated aleatory effect.
+   */
+  generateAleatoryEffect(): string | RandomEffectType;
 }

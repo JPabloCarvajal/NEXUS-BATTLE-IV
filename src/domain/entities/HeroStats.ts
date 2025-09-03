@@ -1,42 +1,42 @@
 export enum HeroType {
-    TANK,
-    WEAPONS_PAL,
-    FIRE_MAGE,
-    ICE_MAGE,
-    POISON_ROGUE,
-    SHAMAN,
-    MEDIC,
-    GUERRERO_ARMAS
+  TANK,
+  WEAPONS_PAL,
+  FIRE_MAGE,
+  ICE_MAGE,
+  POISON_ROGUE,
+  SHAMAN,
+  MEDIC,
+  GUERRERO_ARMAS,
 }
 
 export enum HeroState {
-    ALIVE,
-    DEAD
+  ALIVE,
+  DEAD,
 }
 
 export enum EffectType {
-    DAMAGE,
-    HEAL,
-    BOOST_ATTACK,
-    BOOST_DEFENSE,
-    REVIVE,
-    DODGE,
-    DEFENSE
+  DAMAGE,
+  HEAL,
+  BOOST_ATTACK,
+  BOOST_DEFENSE,
+  REVIVE,
+  DODGE,
+  DEFENSE,
 }
 
 export enum ArmorType {
-    HELMET,
-    CHEST,
-    GLOVERS,
-    BRACERS,
-    BOOTS,
-    PANTS
+  HELMET,
+  CHEST,
+  GLOVERS,
+  BRACERS,
+  BOOTS,
+  PANTS,
 }
 
 export enum ActionType {
-    ATTACK,
-    DEFENSE,
-    HEAL
+  ATTACK,
+  DEFENSE,
+  HEAL,
 }
 
 export enum RandomEffectType {
@@ -45,20 +45,20 @@ export enum RandomEffectType {
   EVADE,
   RESIST,
   ESCAPE,
-  NEGATE
+  NEGATE,
 }
 
 export enum TargetType {
   SELF,
   ALLY,
-  ENEMY
+  ENEMY,
 }
 
 export interface Effect {
   effectType: string;
   value: number;
   durationTurns: number;
-  target: TargetType
+  target: TargetType;
 }
 
 export interface AttackBoost {
@@ -96,7 +96,7 @@ export interface Hero {
   attackBoost: AttackBoost;
   damage: Damage;
   specialActions: SpecialAction[];
-  randomEffects: RandomEffect[]
+  randomEffects: RandomEffect[];
 }
 
 export interface Item {
@@ -134,7 +134,7 @@ export interface Equipped {
 }
 
 export class HeroStats {
-    hero: Hero;
+  hero: Hero;
   equipped: Equipped;
 
   constructor(hero: Hero, equipped: Equipped) {
@@ -142,7 +142,26 @@ export class HeroStats {
     this.equipped = equipped;
   }
 
-  static fromJSON(parsed: any): HeroStats {
+  static fromJSON(parsed: {
+    hero: {
+      heroType: HeroType;
+      level: number;
+      power: number;
+      health: number;
+      defense: number;
+      attack: number;
+      attackBoost: AttackBoost;
+      damage: Damage;
+      specialActions?: SpecialAction[];
+      randomEffects?: RandomEffect[];
+    };
+    equipped?: {
+      items?: Item[];
+      armors?: Armor[];
+      weapons?: Weapon[];
+      epicAbilites?: EpicAbility[];
+    };
+  }): HeroStats {
     const hero: Hero = {
       heroType: parsed.hero.heroType,
       level: parsed.hero.level,
@@ -150,62 +169,61 @@ export class HeroStats {
       health: parsed.hero.health,
       defense: parsed.hero.defense,
       attack: parsed.hero.attack,
-      attackBoost: parsed.hero.attackBoost as AttackBoost,
-      damage: parsed.hero.damage as Damage,
+      attackBoost: parsed.hero.attackBoost,
+      damage: parsed.hero.damage,
       specialActions: (parsed.hero.specialActions || []).map(
-        (sa: any): SpecialAction => ({
+        (sa): SpecialAction => ({
           name: sa.name,
           actionType: sa.actionType,
           powerCost: sa.powerCost,
-          effect: sa.effect as Effect[],
+          effect: sa.effect,
           cooldown: sa.cooldown,
           isAvailable: sa.isAvailable,
         })
       ),
       randomEffects: (parsed.hero.randomEffects || []).map(
-        (re: any): RandomEffect => ({
+        (re): RandomEffect => ({
           randomEffectType: re.randomEffectType,
           percentage: re.percentage,
-          valueApply: re.valueApply as AttackBoost,
+          valueApply: re.valueApply,
         })
-      )
+      ),
     };
 
     const equipped: Equipped = {
       items: (parsed.equipped?.items || []).map(
-        (i: any): Item => ({
+        (i): Item => ({
           name: i.name,
-          effects: i.effects as Effect[],
+          effects: i.effects,
           dropRate: i.dropRate,
         })
       ),
       armors: (parsed.equipped?.armors || []).map(
-        (a: any): Armor => ({
+        (a): Armor => ({
           name: a.name,
-          effects: a.effects as Effect[],
+          effects: a.effects,
           dropRate: a.dropRate,
         })
       ),
       weapons: (parsed.equipped?.weapons || []).map(
-        (w: any): Weapon => ({
+        (w): Weapon => ({
           name: w.name,
-          effects: w.effects as Effect[],
+          effects: w.effects,
           dropRate: w.dropRate,
         })
       ),
       epicAbilites: (parsed.equipped?.epicAbilites || []).map(
-        (ea: any): EpicAbility => ({
+        (ea): EpicAbility => ({
           name: ea.name,
           compatibleHeroType: ea.compatibleHeroType,
-          effects: ea.effects as Effect[],
+          effects: ea.effects,
           cooldown: ea.cooldown,
           isAvailable: ea.isAvailable,
           masterChance: ea.masterChance,
         })
-      )
+      ),
     };
 
     return new HeroStats(hero, equipped);
   }
 }
-

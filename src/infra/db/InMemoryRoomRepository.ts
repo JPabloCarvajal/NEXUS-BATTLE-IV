@@ -34,4 +34,3 @@ export class InMemoryRoomRepository implements RoomRepository {
     return Promise.resolve(Array.from(this.rooms.values()));
   }
 }
-
