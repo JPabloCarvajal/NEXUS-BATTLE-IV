@@ -4,7 +4,11 @@ import { HeroStats } from "../../../domain/entities/HeroStats";
 export class AssignHeroStats {
   constructor(private repo: RoomRepository) {}
 
-  async execute(roomId: string, playerId: string, stats: HeroStats): Promise<void> {
+  async execute(
+    roomId: string,
+    playerId: string,
+    stats: HeroStats
+  ): Promise<void> {
     const room = await this.repo.findById(roomId);
     if (!room) throw new Error("Room not found");
 

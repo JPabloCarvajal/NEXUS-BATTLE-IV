@@ -1,9 +1,8 @@
-import Effect from "./Effect"
-import { ArmorType } from "../Enums"
+import Effect from "./Effect";
+import { ArmorType } from "../Enums";
 
-
-export default interface Armor{
-    name: string 
-    armorType: ArmorType
-    effects: Effect[]
+export default interface Armor {
+  name: string;
+  armorType: ArmorType;
+  effects: Effect[];
 }
