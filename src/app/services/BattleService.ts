@@ -23,7 +23,6 @@ import MasterSkillService, {
   MasterId,
   MasterOutcome,
 } from "./MasterSkillService";
-
 interface TempBuff {
   atk?: number;
   def?: number;
