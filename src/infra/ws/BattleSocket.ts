@@ -167,7 +167,7 @@ export class BattleSocket {
   }
 
   /**
-   * Inicia el timer de 6 minutos para toda la batalla
+   * Inicia el timer de 8 minutos para toda la batalla
    */
   private startBattleTimer(roomId: string) {
     console.log("⏰ Starting 6-minute battle timer for room:", roomId);
@@ -175,7 +175,7 @@ export class BattleSocket {
 
     const timer = setTimeout(() => {
       this.handleBattleTimeout(roomId);
-    }, 6 * 60 * 1000); // 6 minutos
+    }, 8 * 60 * 1000); // 8 minutos
 
     this.battleTimers.set(roomId, timer);
   }
@@ -185,7 +185,7 @@ export class BattleSocket {
     this.clearTurnTimer(roomId);
     const timer = setTimeout(() => {
       this.handleTurnTimeout(roomId);
-    }, 30 * 1000); // 30 segundos
+    }, 60 * 1000); // 60 segundos
 
     this.turnTimers.set(roomId, timer);
 

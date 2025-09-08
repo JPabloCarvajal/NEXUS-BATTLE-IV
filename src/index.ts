@@ -8,7 +8,20 @@ import swaggerUi from "swagger-ui-express";
 import dotenv from "dotenv";
 import swaggerConfig from "../swagger";
 
-dotenv.config();
+let envFile = ".env";
+const envArg = process.argv.find(arg => arg.startsWith("--env-file"));
+if (envArg) {
+  const parts = envArg.split("=");
+  if (parts.length === 2) {
+    envFile = parts[1];
+  } else {
+    const idx = process.argv.indexOf("--env-file");
+    if (idx !== -1 && process.argv.length > idx + 1) {
+      envFile = process.argv[idx + 1];
+    }
+  }
+}
+dotenv.config({ path: envFile });
 
 const app = express();
 const httpServer = createServer(app);
