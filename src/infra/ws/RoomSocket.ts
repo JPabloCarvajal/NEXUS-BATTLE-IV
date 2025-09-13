@@ -8,6 +8,8 @@ import { BattleSocket } from "./BattleSocket";
 // import RedisBattleRepository from "../db/RedisBattleRepository";
 import { InMemoryRoomRepository } from "../db/InMemoryRoomRepository";
 import InMemoryBattleRepository from "../db/InMemoryBattleRepository";
+import { RewardService } from "../../app/services/RewardService";
+import { InventoryApiClient } from "../clients/InventoryApiClient";
 
 const roomRepo = InMemoryRoomRepository.getInstance();
 const battleRepo = InMemoryBattleRepository.getInstance();
@@ -17,7 +19,9 @@ const battleService = new BattleService(roomRepo, battleRepo);
 const leaveRoom = new LeaveRoom(roomRepo);
 
 export default function setupRoomSocket(io: Server) {
-  const battleSocket = new BattleSocket(io, battleService);
+    const rewardService = new RewardService(roomRepo, battleRepo, new InventoryApiClient());
+    const enhancedBattleService = new BattleService(roomRepo, battleRepo, rewardService);
+    const battleSocket = new BattleSocket(io, enhancedBattleService, rewardService);
 
   io.on("connection", (socket) => {
     console.log(`Client connected ${socket.id}`);

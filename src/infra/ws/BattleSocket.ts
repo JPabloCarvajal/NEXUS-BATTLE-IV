@@ -4,6 +4,7 @@ import { BattleService } from "../../app/services/BattleService";
 import { Battle } from "../../domain/entities/Battle";
 import { Player } from "../../domain/entities/Player";
 import { Team } from "../../domain/entities/Team";
+import { RewardService } from "../../app/services/RewardService";
 
 export class BattleSocket {
   private playerBattleMap = new Map<string, string>();
@@ -14,7 +15,11 @@ export class BattleSocket {
   private battleTimers = new Map<string, NodeJS.Timeout>();
   private battleStartTime = new Map<string, number>();
 
-  constructor(private io: Server, private battleService: BattleService) {}
+  constructor(
+    private io: Server,
+    private battleService: BattleService,
+    private rewardService: RewardService
+  ) {}
 
   attachHandlers(socket: Socket) {
     socket.on("joinBattle", ({ roomId, playerId }) => {
@@ -36,6 +41,19 @@ export class BattleSocket {
         console.log(`Action received in room ${roomId}:`, action);
         const result = await this.battleService.handleAction(roomId, action);
         if (result.battleEnded) {
+          //  FIN POR ACCIÓN: enviar recompensas antes de emitir evento y limpiar
+          try {
+            await this.rewardService.awardBattleEnd(
+              roomId,
+              this.getActiveUsernames(roomId)
+            );
+          } catch (e) {
+            console.error(
+              "Failed to award credits on battle end:",
+              (e as Error)?.message || e
+            );
+          }
+
           this.io.to(roomId).emit("battleEnded", { winner: result.winner });
           this.cleanupRoom(roomId);
         } else {
@@ -138,6 +156,19 @@ export class BattleSocket {
       // Terminar batalla y otorgar victoria
       console.log("🔚 Ending battle by disconnection...");
       this.battleService.endBattleByDisconnection(roomId, winnerTeam);
+
+      //  FIN POR DESCONEXIÓN: enviar recompensas antes de emitir evento y limpiar
+      try {
+        await this.rewardService.awardBattleEnd(
+          roomId,
+          this.getActiveUsernames(roomId) // excluye al desconectado
+        );
+      } catch (e) {
+        console.error(
+          "Failed to award credits on DC end:",
+          (e as Error)?.message || e
+        );
+      }
 
       // Notificar a todos los jugadores restantes
       console.log("📢 Emitting battleEnded event to room:", roomId);
@@ -276,6 +307,19 @@ export class BattleSocket {
       );
 
       if (result.battleEnded) {
+        //  FIN POR ACCIÓN AUTOMÁTICA: enviar recompensas
+        try {
+          await this.rewardService.awardBattleEnd(
+            roomId,
+            this.getActiveUsernames(roomId)
+          );
+        } catch (e) {
+          console.error(
+            "Failed to award credits on auto-turn end:",
+            (e as Error)?.message || e
+          );
+        }
+
         this.io.to(roomId).emit("battleEnded", { winner: result.winner });
         this.cleanupRoom(roomId);
       } else {
@@ -302,6 +346,19 @@ export class BattleSocket {
       const winnerTeam = this.calculateWinnerByHealth(battle);
 
       this.battleService.endBattleByDisconnection(roomId, winnerTeam);
+
+      //  FIN POR TIMEOUT GLOBAL: enviar recompensas
+      try {
+        await this.rewardService.awardBattleEnd(
+          roomId,
+          this.getActiveUsernames(roomId)
+        );
+      } catch (e) {
+        console.error(
+          "Failed to award credits on timeout:",
+          (e as Error)?.message || e
+        );
+      }
 
       this.io.to(roomId).emit("battleEnded", {
         winner: winnerTeam,
@@ -395,5 +452,21 @@ export class BattleSocket {
         this.roomPlayerMap.delete(roomId);
       }
     }
+  }
+
+  /**
+   * Devuelve los usernames activos en la sala (excluye sockets desconectados).
+   */
+  private getActiveUsernames(roomId: string): string[] {
+    const sids = this.roomPlayerMap.get(roomId) || new Set<string>();
+    const names: string[] = [];
+    sids.forEach((sid) => {
+      // Solo contar sockets que SIGUEN conectados al Server
+      if (this.io.sockets.sockets.has(sid)) {
+        const name = this.playerSocketMap.get(sid);
+        if (name) names.push(name);
+      }
+    });
+    return names;
   }
 }

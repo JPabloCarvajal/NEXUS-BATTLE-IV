@@ -23,6 +23,7 @@ import MasterSkillService, {
   MasterId,
   MasterOutcome,
 } from "./MasterSkillService";
+import { RewardService } from "./RewardService";
 
 interface TempBuff {
   atk?: number;
@@ -33,7 +34,8 @@ interface TempBuff {
 export class BattleService {
   constructor(
     private roomRepository: RoomRepository,
-    private battleRepository: BattleRepository
+    private battleRepository: BattleRepository,
+    private rewardService?: RewardService
   ) {}
 
   // ======================= Battle bootstrap =======================
@@ -453,6 +455,14 @@ export class BattleService {
     // 4) KO / revive simple 20%
     let ko = target.heroStats.hero.health <= 0;
     if (ko) {
+        try {
+          // Entrega EXP al atacante (según fórmula 10 * (1.2 ^ 1d8))
+          // killer = source.username ; victim = target.username
+          await this.rewardService?.awardKillExp(source.username, target.username);
+        } 
+        catch (e) {
+          console.error("Failed to award EXP on kill:", (e as Error)?.message || e);
+        }
       const myTeam = battle.teams.find((t) => t.findPlayer(target.username));
       if (myTeam) {
         const medic = myTeam.players.find((p) => {

@@ -18,7 +18,7 @@ export class Room {
   private teamA: Player[] = [];
   private teamB: Player[] = [];
   private phase: RoomPhase = "LOBBY";
-  private config: RoomConfig;
+  public config: RoomConfig;
 
   constructor(config: RoomConfig) {
     if (config.heroLevel < 1 || config.heroLevel > 8) {

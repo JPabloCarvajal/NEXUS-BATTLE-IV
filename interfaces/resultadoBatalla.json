@@ -1,5 +1,11 @@
 {
-    "itemNameLost": "string",
-    "itemNameWon": "string",
-    "xpHero": "number"
+    "Rewards":{
+        "playerRewarded": "string",
+        "credits": "number",
+        "exp": "number"
+    },
+    "WonItem":{
+        "originPlayer": "string",
+        "itemName": "string"
+    }
 }
