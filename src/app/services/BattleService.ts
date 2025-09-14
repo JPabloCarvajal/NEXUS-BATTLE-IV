@@ -458,7 +458,7 @@ export class BattleService {
         try {
           // Entrega EXP al atacante (según fórmula 10 * (1.2 ^ 1d8))
           // killer = source.username ; victim = target.username
-          await this.rewardService?.awardKillExp(source.username, target.username);
+          await this.rewardService?.awardKillExp(roomId, source.username, target.username);
         } 
         catch (e) {
           console.error("Failed to award EXP on kill:", (e as Error)?.message || e);
@@ -475,6 +475,7 @@ export class BattleService {
           const medicHero: HeroWithBuff | undefined = medic.heroStats?.hero;
           if (medicHero) medicHero.__rezOnceAt20 = false;
           ko = false;
+          await this.rewardService?.deleteAward(roomId, target.username);
         }
       }
     }

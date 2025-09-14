@@ -10,16 +10,19 @@ import { InMemoryRoomRepository } from "../db/InMemoryRoomRepository";
 import InMemoryBattleRepository from "../db/InMemoryBattleRepository";
 import { RewardService } from "../../app/services/RewardService";
 import { InventoryApiClient } from "../clients/InventoryApiClient";
+import InMemoryRewardsRepository from "../db/InMemoryRewardsRepository";
 
 const roomRepo = InMemoryRoomRepository.getInstance();
 const battleRepo = InMemoryBattleRepository.getInstance();
+const rewardRepo = InMemoryRewardsRepository.getInstance();
+
 const setReady = new SetPlayerReady(roomRepo);
 const assignStats = new AssignHeroStats(roomRepo);
 const battleService = new BattleService(roomRepo, battleRepo);
 const leaveRoom = new LeaveRoom(roomRepo);
 
 export default function setupRoomSocket(io: Server) {
-    const rewardService = new RewardService(roomRepo, battleRepo, new InventoryApiClient());
+    const rewardService = new RewardService(roomRepo, rewardRepo, battleRepo, new InventoryApiClient());
     const enhancedBattleService = new BattleService(roomRepo, battleRepo, rewardService);
     const battleSocket = new BattleSocket(io, enhancedBattleService, rewardService);
 

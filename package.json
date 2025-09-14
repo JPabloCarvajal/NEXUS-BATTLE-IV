@@ -6,10 +6,11 @@
     "dev": "npx ts-node-dev --respawn --transpile-only src/index.ts",
     "dev:debug": "npx ts-node-dev --inspect --respawn src/index.ts",
     "dev:local": "npm run dev -- --env-file .env.local",
+    "dev:deploy": "npx ts-node-dev --respawn --transpile-only app/src/index.ts",
+    "start": "node build/src/index.js",
     "prebuild": "npm run clean && npm run lint && npm run test",
     "build": "npm run build:compile",
     "build:compile": "tsc --build tsconfig.build.json",
-    "start": "node build/src/index.js",
     "start:prod": "cross-env NODE_ENV=production npm start",
     "start:pm2": "pm2 start ecosystem.config.js",
     "test": "jest --coverage --detectOpenHandles",
@@ -24,8 +25,8 @@
     "complexity": "plato -r -d reports/complexity build/src/",
     "clean": "rimraf build coverage reports",
     "docker:build": "docker build -t nexus-battle-iv:latest .",
-    "docker:run": "docker run -p 3000:3000 --env-file .env.local nexus-battle-iv:latest",
-    "docker:deploy": "docker build -t camanrofo34/nexus-battle-iv:deploy . && docker push camanrofo34/nexus-battle-iv:deploy"
+    "docker:run": "docker run --rm -p 3000:3000 --env-file .env.deploy nexus-battle-iv:latest",
+    "docker:deploy": "docker build -t camanrofo34/nexus-battle-iv:latest . && docker push camanrofo34/nexus-battle-iv:latest"
   },
   "keywords": [],
   "author": "",

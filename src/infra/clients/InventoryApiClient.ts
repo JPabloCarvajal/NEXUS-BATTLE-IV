@@ -4,11 +4,24 @@ export interface RewardPayload {
     credits: number; // 0 si solo EXP
     exp: number;     // 0 si solo créditos
   };
-  WonItem?: {
+  WonItem: {
     originPlayer: string;
     itemName: string; // "" si no aplica
-  } | null;
+  };
 }
+
+export interface RewardsRequest {
+    Rewards: {
+      playerRewarded: string;
+      credits: number;
+      exp: number;
+    };
+    WonItem:{
+      originPlayer: string;
+      itemName: string;
+    }[];
+}
+
 
 export class InventoryApiClient {
   constructor(
@@ -21,7 +34,7 @@ export class InventoryApiClient {
     }
   }
 
-  async sendReward(payload: RewardPayload): Promise<void> {
+  async sendReward(payload: RewardsRequest): Promise<void> {
     const res = await fetch(this.rewardsUrl, {
       method: "POST",
       headers: {
