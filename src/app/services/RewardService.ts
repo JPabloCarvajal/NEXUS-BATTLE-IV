@@ -35,44 +35,68 @@ export class RewardService {
     // Pagar a ganadores
     for (const username of winners) {
       if (!eligible.has(username)) continue; // no recibe si abandonó
+      const apostedRewards = room?.config.credits ?? 0;
       const rewardsPayload = this.rewardRepo.getAwards(roomId, username);
       const totalExp = rewardsPayload.then(rewards => rewards.reduce((sum, r) => sum + r.Rewards.exp, 0));
       const totalCredits = rewardsPayload.then(rewards => rewards.reduce((sum, r) => sum + r.Rewards.credits, 0));
       const originPlayers = rewardsPayload.then(rewards => rewards.map(r => r.WonItem.originPlayer));
       const itemNames = rewardsPayload.then(rewards => rewards.map(r => r.WonItem.itemName));
-      await this.inventory.sendReward(this.buildPayload(username, winnerCredits + await totalCredits, await totalExp, await originPlayers, await itemNames));
-
+      await this.inventory.sendReward(this.buildPayload(username, apostedRewards + winnerCredits + await totalCredits, await totalExp, await originPlayers, await itemNames));
     }
 
     // Pagar a participantes no ganadores
     for (const username of participants) {
       if (winners.includes(username)) continue;
       if (!eligible.has(username)) continue; // abandonó
+      const apostedRewards = room?.config.credits ?? 0;
       const rewardsPayload = this.rewardRepo.getAwards(roomId, username);
       const totalExp = rewardsPayload.then(rewards => rewards.reduce((sum, r) => sum + r.Rewards.exp, 0));
       const totalCredits = rewardsPayload.then(rewards => rewards.reduce((sum, r) => sum + r.Rewards.credits, 0));
       const originPlayers = rewardsPayload.then(rewards => rewards.map(r => r.WonItem.originPlayer));
       const itemNames = rewardsPayload.then(rewards => rewards.map(r => r.WonItem.itemName));
-      await this.inventory.sendReward(this.buildPayload(username, 1 + await totalCredits, await totalExp, await originPlayers, await itemNames));
+      
+      await this.inventory.sendReward(this.buildPayload(username, 1 + await totalCredits - apostedRewards, await totalExp, await originPlayers, await itemNames));
     }
   }
 
   /** Otorga EXP al atacante cuando deja KO a un enemigo (NPC o jugador). */
   async awardKillExp(roomId: string, killerUsername: string, victimUsername: string): Promise<number> {
     const die = 1 + Math.floor(Math.random() * 8); // 1d8
-    const exp = Math.round(10 * Math.pow(1.2, die)); // fórmula del PDF  :contentReference[oaicite:4]{index=4}
+    const exp = Math.round(10 * Math.pow(1.2, die)); // fórmula del PDF
 
     const victimPlayer = await this.battleRepo.findById(roomId).then(b => b?.findPlayer(victimUsername));
-    const armorsName = victimPlayer?.heroStats?.equipped?.armors.map(a => a.name) || [];
-    const armorProb = victimPlayer?.heroStats?.equipped?.armors.map(a => a.dropRate) || [];
-    const weaponsName = victimPlayer?.heroStats?.equipped?.weapons.map(w => w.name) || [];
-    const weaponProb = victimPlayer?.heroStats?.equipped?.weapons.map(w => w.dropRate) || [];
-    const itemName = victimPlayer?.heroStats?.equipped?.items.map(i => i.name) || [];
-    const itemProb = victimPlayer?.heroStats?.equipped?.items.map(i => i.dropRate) || [];
-    const epicName = victimPlayer?.heroStats?.equipped?.epicAbilites.map(e => e.name) || [];
-    const epicProb = victimPlayer?.heroStats?.equipped?.epicAbilites.map(e => e.masterChance) || [];
+    console.log("[awardKillExp] victimPlayer:", victimPlayer);
+    if (!victimPlayer) {
+      console.error(`[awardKillExp] victimPlayer not found for username: ${victimUsername} in room: ${roomId}`);
+    }
+    console.log("[awardKillExp] victimPlayer.heroStats:", victimPlayer?.heroStats);
+    console.log("[awardKillExp] victimPlayer.heroStats.equipped:", victimPlayer?.heroStats?.equipped);
+
+    const armors = victimPlayer?.heroStats?.equipped?.armors;
+    console.log("[awardKillExp] armors:", armors);
+    const armorsName = armors?.map(a => a.name) || [];
+    const armorProb = armors?.map(a => a.dropRate) || [];
+
+    const weapons = victimPlayer?.heroStats?.equipped?.weapons;
+    console.log("[awardKillExp] weapons:", weapons);
+    const weaponsName = weapons?.map(w => w.name) || [];
+    const weaponProb = weapons?.map(w => w.dropRate) || [];
+
+    const items = victimPlayer?.heroStats?.equipped?.items;
+    console.log("[awardKillExp] items:", items);
+    const itemName = items?.map(i => i.name) || [];
+    const itemProb = items?.map(i => i.dropRate) || [];
+
+    const epics = victimPlayer?.heroStats?.equipped?.epicAbilites;
+    console.log("[awardKillExp] epicAbilites:", epics);
+    const epicName = epics?.map(e => e.name) || [];
+    const epicProb = epics?.map(e => e.masterChance) || [];
+
     const maybeItemName = [...armorsName, ...weaponsName, ...itemName, ...epicName];
     const maybeItemProb = [...armorProb, ...weaponProb, ...itemProb, ...epicProb];
+    console.log("[awardKillExp] maybeItemName:", maybeItemName);
+    console.log("[awardKillExp] maybeItemProb:", maybeItemProb);
+
     const aleatoryRewardEffect = new AleatoryDropRateEffect(
       maybeItemProb,
       maybeItemName
@@ -81,8 +105,7 @@ export class RewardService {
     const lostItem = aleatoryRewardEffect.generateAleatoryEffect();
     const payload: RewardPayload = {
       Rewards: { playerRewarded: killerUsername, credits: 0, exp },
-      WonItem: 
-        { originPlayer: victimUsername, itemName: lostItem }
+      WonItem: { originPlayer: victimUsername, itemName: lostItem }
     };
     console.log("RewardService: awarding kill exp with payload", payload);
     await this.rewardRepo.awardBattleEnd(roomId, payload);

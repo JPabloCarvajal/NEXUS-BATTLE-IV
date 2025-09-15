@@ -21,6 +21,9 @@ if (envArg) {
     }
   }
 }
+
+console.log(process.env["ACCEPTED_ORIGINS"]);
+console.log(process.env["INVENTORY_REWARDS_URL"]);
 dotenv.config({ path: envFile });
 
 const app = express();

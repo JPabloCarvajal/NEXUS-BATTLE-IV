@@ -26,8 +26,7 @@ export interface RewardsRequest {
 export class InventoryApiClient {
   constructor(
     // TODO especificar la url
-    private rewardsUrl = "AGREGAR DESPUES",
-    private apiKey = "AGREGAR DESPUES"
+    private rewardsUrl = process.env["INVENTORY_REWARDS_URL"] || "",
   ) {
     if (!this.rewardsUrl) {
       throw new Error("Missing INVENTORY_REWARDS_URL");
@@ -35,11 +34,11 @@ export class InventoryApiClient {
   }
 
   async sendReward(payload: RewardsRequest): Promise<void> {
+    console.log("InventoryApiClient: sending reward with payload", payload);
     const res = await fetch(this.rewardsUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
       },
       body: JSON.stringify(payload),
     });
