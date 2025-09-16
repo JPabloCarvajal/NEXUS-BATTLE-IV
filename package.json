@@ -24,8 +24,8 @@
     "dep-check": "depcheck --ignores='@types/*,jest,typescript'",
     "complexity": "plato -r -d reports/complexity build/src/",
     "clean": "rimraf build coverage reports",
-    "docker:build": "docker build -t nexus-battle-iv:latest .",
-    "docker:run": "docker run --rm -p 3000:3000 --env-file .env.deploy nexus-battle-iv:latest",
+    "docker:build": "docker build -t camanrofo34/nexus-battle-iv:latest .",
+    "docker:run": "docker run --rm -p 3000:3000 --env-file .env.deploy camanrofo34/nexus-battle-iv:latest",
     "docker:deploy": "docker build -t camanrofo34/nexus-battle-iv:latest . && docker push camanrofo34/nexus-battle-iv:latest"
   },
   "keywords": [],

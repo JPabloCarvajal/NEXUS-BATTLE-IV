@@ -1,3 +1,4 @@
+
 export interface RewardPayload {
   Rewards: {
     playerRewarded: string;
@@ -25,12 +26,8 @@ export interface RewardsRequest {
 
 export class InventoryApiClient {
   constructor(
-    // TODO especificar la url
-    private rewardsUrl = process.env["INVENTORY_REWARDS_URL"] || "",
+    private rewardsUrl = process.env["INVENTORY_API_REWARDS_URL"] || "http://localhost:1882/rewards",
   ) {
-    if (!this.rewardsUrl) {
-      throw new Error("Missing INVENTORY_REWARDS_URL");
-    }
   }
 
   async sendReward(payload: RewardsRequest): Promise<void> {
