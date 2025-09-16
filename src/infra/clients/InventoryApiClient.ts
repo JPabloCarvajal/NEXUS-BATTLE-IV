@@ -1,32 +1,41 @@
+
 export interface RewardPayload {
   Rewards: {
     playerRewarded: string;
     credits: number; // 0 si solo EXP
     exp: number;     // 0 si solo créditos
   };
-  WonItem?: {
+  WonItem: {
     originPlayer: string;
     itemName: string; // "" si no aplica
-  } | null;
+  };
 }
+
+export interface RewardsRequest {
+    Rewards: {
+      playerRewarded: string;
+      credits: number;
+      exp: number;
+    };
+    WonItem:{
+      originPlayer: string;
+      itemName: string;
+    }[];
+}
+
 
 export class InventoryApiClient {
   constructor(
-    // TODO especificar la url
-    private rewardsUrl = "AGREGAR DESPUES",
-    private apiKey = "AGREGAR DESPUES"
+    private rewardsUrl = process.env["INVENTORY_API_REWARDS_URL"] || "http://localhost:1882/rewards",
   ) {
-    if (!this.rewardsUrl) {
-      throw new Error("Missing INVENTORY_REWARDS_URL");
-    }
   }
 
-  async sendReward(payload: RewardPayload): Promise<void> {
+  async sendReward(payload: RewardsRequest): Promise<void> {
+    console.log("InventoryApiClient: sending reward with payload", payload);
     const res = await fetch(this.rewardsUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
       },
       body: JSON.stringify(payload),
     });

@@ -29,6 +29,6 @@ export default class AleatoryDropRateEffect implements AleatoryEffectsFactory {
         return this.outcomes[i] ?? "";
       }
     }
-    return "No pierde ningun producto";
+    return "";
   }
 }
