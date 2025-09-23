@@ -22,9 +22,10 @@ if (envArg) {
   }
 }
 
+dotenv.config({ path: envFile });
+
 console.log(process.env["ACCEPTED_ORIGINS"]);
 console.log(process.env["INVENTORY_REWARDS_URL"]);
-dotenv.config({ path: envFile });
 
 const app = express();
 const httpServer = createServer(app);

@@ -36,11 +36,7 @@ WORKDIR /app
 
 
 # Copy built application from builder stage
-COPY --from=builder --chown=nextjs:nodejs /app/build ./build
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
-
-COPY --from=builder --chown=nextjs:nodejs /app/.env.deploy ./.env.deploy
+COPY --from=builder --chown=nextjs:nodejs /app ./
 
 # Switch to non-root user
 USER nextjs
@@ -56,4 +52,4 @@ EXPOSE 3000
 ENTRYPOINT ["tini", "--"]
 
 # Start application
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
